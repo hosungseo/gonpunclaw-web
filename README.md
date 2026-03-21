@@ -45,38 +45,28 @@ npm install
 npm run dev
 ```
 
-브라우저에서 아래 주소로 확인합니다.
+`basePath: "/gonpunclaw-web"`이 설정되어 있으므로 아래 주소로 확인합니다.
 
-```bash
-http://localhost:3000
+```
+http://localhost:3000/gonpunclaw-web
 ```
 
 ## 프로덕션 빌드
-
-이 프로젝트는 GitHub Pages 배포를 위해 **정적 export** 방식으로 빌드됩니다.
 
 ```bash
 npm run build
 ```
 
-설정은 `next.config.ts`에서 관리합니다.
-
-- `output: "export"`
-- `images.unoptimized: true`
-
-빌드 결과물은 `out/`에 생성됩니다.
+빌드 결과물은 `out/`에 생성됩니다. (`output: "export"` 정적 빌드)
 
 ## 배포 방식
 
-현재 배포 구조는 다음과 같습니다.
-
-- `main` 브랜치: 소스 코드
-- `gh-pages` 브랜치: 정적 export 결과물
-- GitHub Pages 소스: `gh-pages` 브랜치 `/`
+- `main` 브랜치에 push하면 **GitHub Actions**가 자동으로 빌드 · 배포합니다.
+- 워크플로우: `.github/workflows/deploy.yml`
 
 공개 URL:
 
-```bash
+```
 https://hosungseo.github.io/gonpunclaw-web/
 ```
 
