@@ -2,6 +2,7 @@ import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import { getAllUseCases, getUseCaseByNo } from '@/lib/data';
 import DifficultyBadge from '@/components/DifficultyBadge';
+import ChatDemo from '@/components/ChatDemo';
 import type { Metadata } from 'next';
 
 export function generateStaticParams() {
@@ -137,6 +138,13 @@ export default async function UseCaseDetailPage({
           ))}
         </div>
       </Section>
+
+      {/* 채팅 데모 */}
+      {uc.채팅예시 && uc.채팅예시.length > 0 && (
+        <Section title="💬 실제 대화 예시">
+          <ChatDemo messages={uc.채팅예시} />
+        </Section>
+      )}
 
       {/* 산출물 예시 */}
       {uc.산출물예시 && (

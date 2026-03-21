@@ -1,3 +1,8 @@
+export interface ChatMessage {
+  role: "user" | "agent";
+  message: string;
+}
+
 export interface UseCase {
   no: string;
   부처: string;
@@ -20,6 +25,13 @@ export interface UseCase {
     제목: string;
     본문: string;
     형태: string;
+  };
+  채팅예시?: ChatMessage[];
+  데이터소스업그레이드?: {
+    변경여부: string;
+    기존소스?: string[];
+    신규소스?: string[];
+    이유?: string;
   };
 }
 
