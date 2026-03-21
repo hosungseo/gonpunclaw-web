@@ -2,23 +2,27 @@ import type { Metadata } from 'next';
 import demoData from '@/data/demo.json';
 import crossData from '@/data/demo-cross.json';
 import FadeIn from '@/components/FadeIn';
+import type { DemoData, CrossDemoData } from '@/types/demo';
 
 export const metadata: Metadata = {
   title: '대시보드 | 공픈클로',
   description: '실시간 공공API 데모 — 아파트 실거래가, 미세먼지, 관보',
 };
 
+const demo = demoData as unknown as DemoData;
+const cross = crossData as unknown as CrossDemoData;
+
 export default function DashboardPage() {
-  const { apt, air, gazette, fetchedAt } = demoData as {
-    apt: Array<{
-      area: string;
-      count: number;
-      data: Array<{ 아파트: string; 거래금액: string; 면적: string; 층: string; 년: string; 월: string; 일: string }>;
-    }>;
-    air: Array<{ sido: string; stations: Array<{ 측정소: string; PM10: string; PM25: string; 등급: string }> }>;
-    gazette: { total: number; items: Array<{ 제목: string; 발행기관: string; 발행일: string; 유형: string }> };
-    fetchedAt: string;
-  };
+  const { apt, air, gazette, fetchedAt } = demo;
+
+  if (!apt || !air || !gazette) {
+    return (
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24 text-center">
+        <p className="text-2xl font-bold text-gray-400 mb-3">데이터를 불러올 수 없습니다</p>
+        <p className="text-sm text-gray-400">demo.json 파일을 확인해주세요.</p>
+      </div>
+    );
+  }
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
@@ -41,7 +45,7 @@ export default function DashboardPage() {
         <section className="mb-14">
           <SectionHeader emoji="🏠" title="#011 아파트 매매 실거래가" sub="국토교통부 API · UseCase #011 주택정책과" />
           <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-            {apt && apt.map((area) => (
+            {apt.map((area) => (
               <div key={area.area} className="bg-white rounded-2xl border border-gray-100 overflow-hidden shadow-sm">
                 <div className="bg-blue-600 text-white px-5 py-3 flex items-center justify-between">
                   <h3 className="font-bold text-sm">{area.area}</h3>
@@ -80,7 +84,7 @@ export default function DashboardPage() {
         <section className="mb-14">
           <SectionHeader emoji="🌫️" title="#036 실시간 미세먼지 현황" sub="한국환경공단 에어코리아 API · UseCase #036 대기환경과" />
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-            {air && air.map((sido) => {
+            {air.map((sido) => {
               const station = sido.stations?.[0];
               const pm10 = Number(station?.PM10) || 0;
               const { label, cls } = pm10 <= 30
@@ -113,21 +117,25 @@ export default function DashboardPage() {
               <span className="text-gray-400 text-xs">총 {gazette?.total || 0}건</span>
             </div>
             <div className="divide-y divide-gray-50">
-              {gazette?.items?.map((item, i) => (
-                <div key={i} className="px-5 py-3.5 hover:bg-gray-50 transition-colors">
-                  <div className="flex items-start justify-between gap-4">
-                    <div className="flex-1 min-w-0">
-                      <span className="text-sm font-medium text-gray-900 block truncate">{item.제목}</span>
-                      <div className="flex items-center gap-2 mt-1">
-                        <span className="text-xs text-gray-500">{item.발행기관}</span>
-                        <span className="text-gray-200">·</span>
-                        <span className="text-xs text-gray-400">{item.발행일}</span>
+              {gazette?.items?.length > 0
+                ? gazette.items.map((item, i) => (
+                    <div key={i} className="px-5 py-3.5 hover:bg-gray-50 transition-colors">
+                      <div className="flex items-start justify-between gap-4">
+                        <div className="flex-1 min-w-0">
+                          <span className="text-sm font-medium text-gray-900 block truncate">{item.제목}</span>
+                          <div className="flex items-center gap-2 mt-1">
+                            <span className="text-xs text-gray-500">{item.발행기관}</span>
+                            <span className="text-gray-200">·</span>
+                            <span className="text-xs text-gray-400">{item.발행일}</span>
+                          </div>
+                        </div>
+                        <span className="text-xs bg-gray-100 text-gray-500 px-2 py-1 rounded-lg shrink-0">{item.유형}</span>
                       </div>
                     </div>
-                    <span className="text-xs bg-gray-100 text-gray-500 px-2 py-1 rounded-lg shrink-0">{item.유형}</span>
-                  </div>
-                </div>
-              ))}
+                  ))
+                : (
+                  <div className="px-5 py-8 text-center text-sm text-gray-400">관보 데이터가 없습니다.</div>
+                )}
             </div>
           </div>
         </section>
@@ -145,139 +153,145 @@ export default function DashboardPage() {
       </FadeIn>
 
       {/* Cross 1: 세종시 */}
-      <FadeIn delay={0.05}>
-        <section className="mb-14">
-          <SectionHeader
-            emoji="🏛️"
-            title={((crossData as Record<string, unknown>).sejong as Record<string, string>)?.title ?? '#097 세종시 종합'}
-            sub="국토부 실거래가 + 환경공단 에어코리아 + 행안부 인구이동 — 3개 부처 교차"
-          />
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-5">
-            <StatCard
-              color="blue"
-              icon="🏠"
-              label="아파트 매매"
-              value={`${((crossData as Record<string, unknown>).sejong as Record<string, Record<string, number>>)?.apt?.avg_price?.toLocaleString() ?? '—'}만원`}
-              sub={`세종시 2025.2월 평균 · ${((crossData as Record<string, unknown>).sejong as Record<string, Record<string, number>>)?.apt?.count ?? 0}건`}
+      {cross?.sejong ? (
+        <FadeIn delay={0.05}>
+          <section className="mb-14">
+            <SectionHeader
+              emoji="🏛️"
+              title={cross.sejong.title ?? '#097 세종시 종합'}
+              sub="국토부 실거래가 + 환경공단 에어코리아 + 행안부 인구이동 — 3개 부처 교차"
             />
-            <StatCard
-              color="emerald"
-              icon="🌫️"
-              label="미세먼지"
-              value={`${((crossData as Record<string, unknown>).sejong as Record<string, Array<Record<string, string>>>)?.air?.[0]?.PM10 ?? '—'}㎍/㎥`}
-              sub="세종시 PM10 실시간"
-            />
-            <StatCard
-              color="purple"
-              icon="👥"
-              label="인구이동"
-              value={`${((crossData as Record<string, unknown>).sejong as Record<string, Record<string, number>>)?.population?.count ?? 0}건`}
-              sub="서울→세종 전입 (2025.1~3월)"
-            />
-          </div>
-          <div className="bg-white rounded-2xl border border-gray-100 p-5 shadow-sm">
-            <h3 className="text-sm font-bold text-gray-800 mb-4">세종시 아파트 매매 상세</h3>
-            <table className="w-full text-sm">
-              <thead>
-                <tr className="text-left text-xs text-gray-400 border-b border-gray-100">
-                  <th className="pb-2 font-medium">아파트</th>
-                  <th className="pb-2 text-right font-medium">거래금액(만원)</th>
-                  <th className="pb-2 text-right font-medium">면적(㎡)</th>
-                  <th className="pb-2 text-right font-medium">층</th>
-                </tr>
-              </thead>
-              <tbody>
-                {((crossData as Record<string, unknown>).sejong as Record<string, Record<string, Array<Record<string, string>>>>)?.apt?.data?.slice(0, 6).map((item, i) => (
-                  <tr key={i} className="border-b border-gray-50 hover:bg-gray-50 transition-colors">
-                    <td className="py-2 text-gray-800">{item.아파트?.substring(0, 15)}</td>
-                    <td className="py-2 text-right text-blue-700 font-bold tabular-nums">{item.거래금액}</td>
-                    <td className="py-2 text-right text-gray-500 tabular-nums">{Number(item.면적).toFixed(1)}</td>
-                    <td className="py-2 text-right text-gray-500">{item.층}</td>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-5">
+              <StatCard
+                color="blue"
+                icon="🏠"
+                label="아파트 매매"
+                value={`${cross.sejong.apt?.avg_price?.toLocaleString() ?? '—'}만원`}
+                sub={`세종시 2025.2월 평균 · ${cross.sejong.apt?.count ?? 0}건`}
+              />
+              <StatCard
+                color="emerald"
+                icon="🌫️"
+                label="미세먼지"
+                value={`${cross.sejong.air?.[0]?.PM10 ?? '—'}㎍/㎥`}
+                sub="세종시 PM10 실시간"
+              />
+              <StatCard
+                color="purple"
+                icon="👥"
+                label="인구이동"
+                value={`${cross.sejong.population?.count ?? 0}건`}
+                sub="서울→세종 전입 (2025.1~3월)"
+              />
+            </div>
+            <div className="bg-white rounded-2xl border border-gray-100 p-5 shadow-sm">
+              <h3 className="text-sm font-bold text-gray-800 mb-4">세종시 아파트 매매 상세</h3>
+              <table className="w-full text-sm">
+                <thead>
+                  <tr className="text-left text-xs text-gray-400 border-b border-gray-100">
+                    <th className="pb-2 font-medium">아파트</th>
+                    <th className="pb-2 text-right font-medium">거래금액(만원)</th>
+                    <th className="pb-2 text-right font-medium">면적(㎡)</th>
+                    <th className="pb-2 text-right font-medium">층</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </section>
-      </FadeIn>
+                </thead>
+                <tbody>
+                  {cross.sejong.apt?.data?.slice(0, 6).map((item, i) => (
+                    <tr key={i} className="border-b border-gray-50 hover:bg-gray-50 transition-colors">
+                      <td className="py-2 text-gray-800">{item.아파트?.substring(0, 15)}</td>
+                      <td className="py-2 text-right text-blue-700 font-bold tabular-nums">{item.거래금액}</td>
+                      <td className="py-2 text-right text-gray-500 tabular-nums">{Number(item.면적).toFixed(1)}</td>
+                      <td className="py-2 text-right text-gray-500">{item.층}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </section>
+        </FadeIn>
+      ) : null}
 
       {/* Cross 2: 법령+관보+국회 */}
-      <FadeIn delay={0.05}>
-        <section className="mb-14">
-          <SectionHeader emoji="⚖️" title="#010 자치법규 동향 종합 분석" sub="법제처 법령 + 행안부 관보 + 열린국회 법안 — 3개 기관 교차" />
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <CrossCard color="indigo" title="📚 법제처 법령">
-              {((crossData as Record<string, unknown>).law_cross as Record<string, Array<Record<string, string>>>)?.laws?.map((l, i) => (
-                <div key={i} className="text-xs border-b border-gray-100 pb-2 last:border-0">
-                  <div className="font-medium text-gray-900 mb-0.5">{l.법령명?.substring(0, 25)}</div>
-                  <div className="text-gray-400">{l.소관} · {l.공포일}</div>
-                </div>
-              ))}
-            </CrossCard>
-            <CrossCard color="gray" title="📜 관보 고시">
-              {((crossData as Record<string, unknown>).law_cross as Record<string, Array<Record<string, string>>>)?.gazette?.length
-                ? ((crossData as Record<string, unknown>).law_cross as Record<string, Array<Record<string, string>>>).gazette.map((g, i) => (
-                    <div key={i} className="text-xs border-b border-gray-100 pb-2 last:border-0">
-                      <div className="font-medium text-gray-900 mb-0.5">{g.제목}</div>
-                      <div className="text-gray-400">{g.기관} · {g.발행일}</div>
-                    </div>
-                  ))
-                : <div className="text-xs text-gray-400 py-4 text-center">해당 기간 관보 없음</div>
-              }
-            </CrossCard>
-            <CrossCard color="emerald" title="🏛️ 국회 법안">
-              {((crossData as Record<string, unknown>).law_cross as Record<string, Array<Record<string, string>>>)?.bills?.map((b, i) => (
-                <div key={i} className="text-xs border-b border-gray-100 pb-2 last:border-0">
-                  <div className="font-medium text-gray-900 mb-0.5">{b.법안명}</div>
-                  <div className="text-gray-400">{b.발의자} · {b.제안일}</div>
-                </div>
-              ))}
-            </CrossCard>
-          </div>
-        </section>
-      </FadeIn>
+      {cross?.law_cross ? (
+        <FadeIn delay={0.05}>
+          <section className="mb-14">
+            <SectionHeader emoji="⚖️" title="#010 자치법규 동향 종합 분석" sub="법제처 법령 + 행안부 관보 + 열린국회 법안 — 3개 기관 교차" />
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <CrossCard color="indigo" title="📚 법제처 법령">
+                {cross.law_cross.laws?.map((l, i) => (
+                  <div key={i} className="text-xs border-b border-gray-100 pb-2 last:border-0">
+                    <div className="font-medium text-gray-900 mb-0.5">{l.법령명?.substring(0, 25)}</div>
+                    <div className="text-gray-400">{l.소관} · {l.공포일}</div>
+                  </div>
+                ))}
+              </CrossCard>
+              <CrossCard color="gray" title="📜 관보 고시">
+                {cross.law_cross.gazette?.length
+                  ? cross.law_cross.gazette.map((g, i) => (
+                      <div key={i} className="text-xs border-b border-gray-100 pb-2 last:border-0">
+                        <div className="font-medium text-gray-900 mb-0.5">{g.제목}</div>
+                        <div className="text-gray-400">{g.기관} · {g.발행일}</div>
+                      </div>
+                    ))
+                  : <div className="text-xs text-gray-400 py-4 text-center">해당 기간 관보 없음</div>
+                }
+              </CrossCard>
+              <CrossCard color="emerald" title="🏛️ 국회 법안">
+                {cross.law_cross.bills?.map((b, i) => (
+                  <div key={i} className="text-xs border-b border-gray-100 pb-2 last:border-0">
+                    <div className="font-medium text-gray-900 mb-0.5">{b.법안명}</div>
+                    <div className="text-gray-400">{b.발의자} · {b.제안일}</div>
+                  </div>
+                ))}
+              </CrossCard>
+            </div>
+          </section>
+        </FadeIn>
+      ) : null}
 
       {/* Cross 3: API 카탈로그 */}
-      <FadeIn delay={0.05}>
-        <section className="mb-14">
-          <SectionHeader
-            emoji="📊"
-            title="#004 공공데이터 API 카탈로그"
-            sub={`공공데이터포털 목록조회 API — 전체 ${((crossData as Record<string, unknown>).catalog as Record<string, number>)?.total_apis?.toLocaleString() ?? 0}개 오픈API`}
-          />
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-            <div className="bg-white rounded-2xl border border-gray-100 p-5 shadow-sm">
-              <h3 className="text-sm font-bold text-gray-800 mb-4">기관별 API 등록 수 (상위 10)</h3>
-              {((crossData as Record<string, unknown>).catalog as Record<string, Array<Record<string, string | number>>>)?.top_orgs?.map((o, i) => (
-                <div key={i} className="flex items-center justify-between py-1.5 border-b border-gray-50 last:border-0">
-                  <span className="text-xs text-gray-700">{String(o.기관).substring(0, 20)}</span>
-                  <div className="flex items-center gap-2">
-                    <div className="w-20 h-1.5 bg-gray-100 rounded-full overflow-hidden">
-                      <div className="h-full bg-blue-500 rounded-full" style={{ width: `${Math.min(100, (Number(o.API수) / 20) * 100)}%` }} />
+      {cross?.catalog ? (
+        <FadeIn delay={0.05}>
+          <section className="mb-14">
+            <SectionHeader
+              emoji="📊"
+              title="#004 공공데이터 API 카탈로그"
+              sub={`공공데이터포털 목록조회 API — 전체 ${cross.catalog.total_apis?.toLocaleString() ?? 0}개 오픈API`}
+            />
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+              <div className="bg-white rounded-2xl border border-gray-100 p-5 shadow-sm">
+                <h3 className="text-sm font-bold text-gray-800 mb-4">기관별 API 등록 수 (상위 10)</h3>
+                {cross.catalog.top_orgs?.map((o, i) => (
+                  <div key={i} className="flex items-center justify-between py-1.5 border-b border-gray-50 last:border-0">
+                    <span className="text-xs text-gray-700">{String(o.기관).substring(0, 20)}</span>
+                    <div className="flex items-center gap-2">
+                      <div className="w-20 h-1.5 bg-gray-100 rounded-full overflow-hidden">
+                        <div className="h-full bg-blue-500 rounded-full" style={{ width: `${Math.min(100, (Number(o.API수) / 20) * 100)}%` }} />
+                      </div>
+                      <span className="text-xs font-bold text-blue-700 w-6 text-right tabular-nums">{o.API수}</span>
                     </div>
-                    <span className="text-xs font-bold text-blue-700 w-6 text-right tabular-nums">{o.API수}</span>
                   </div>
-                </div>
-              ))}
-            </div>
-            <div className="bg-white rounded-2xl border border-gray-100 p-5 shadow-sm">
-              <h3 className="text-sm font-bold text-gray-800 mb-4">최근 등록 API 샘플</h3>
-              {((crossData as Record<string, unknown>).catalog as Record<string, Array<Record<string, string>>>)?.sample?.map((s, i) => (
-                <div key={i} className="py-2.5 border-b border-gray-50 last:border-0">
-                  <div className="text-sm font-medium text-gray-900">{s.API명}</div>
-                  <div className="flex items-center gap-2 mt-1">
-                    <span className="text-xs bg-gray-100 px-2 py-0.5 rounded-md">{s.기관}</span>
-                    <span className="text-xs text-gray-400">{s.유형}</span>
+                ))}
+              </div>
+              <div className="bg-white rounded-2xl border border-gray-100 p-5 shadow-sm">
+                <h3 className="text-sm font-bold text-gray-800 mb-4">최근 등록 API 샘플</h3>
+                {cross.catalog.sample?.map((s, i) => (
+                  <div key={i} className="py-2.5 border-b border-gray-50 last:border-0">
+                    <div className="text-sm font-medium text-gray-900">{s.API명}</div>
+                    <div className="flex items-center gap-2 mt-1">
+                      <span className="text-xs bg-gray-100 px-2 py-0.5 rounded-md">{s.기관}</span>
+                      <span className="text-xs text-gray-400">{s.유형}</span>
+                    </div>
                   </div>
+                ))}
+                <div className="mt-4 text-center text-xs text-gray-400">
+                  전체 {cross.catalog.total_apis?.toLocaleString()}개 오픈API 중 샘플
                 </div>
-              ))}
-              <div className="mt-4 text-center text-xs text-gray-400">
-                전체 {((crossData as Record<string, unknown>).catalog as Record<string, number>)?.total_apis?.toLocaleString()}개 오픈API 중 샘플
               </div>
             </div>
-          </div>
-        </section>
-      </FadeIn>
+          </section>
+        </FadeIn>
+      ) : null}
 
       {/* Data sources */}
       <FadeIn delay={0.05}>

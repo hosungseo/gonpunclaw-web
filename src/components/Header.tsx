@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useEffect, useState } from 'react';
+import { getMetadata } from '@/lib/data';
 
 const links = [
   { href: '/', label: '홈' },
@@ -13,6 +14,7 @@ const links = [
 export default function Header() {
   const pathname = usePathname();
   const [scrolled, setScrolled] = useState(false);
+  const { version } = getMetadata();
 
   useEffect(() => {
     const handler = () => setScrolled(window.scrollY > 20);
@@ -31,7 +33,7 @@ export default function Header() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-14 flex items-center justify-between">
         <Link href="/" className="flex items-center gap-2 group">
           <span className="text-white font-bold text-lg tracking-tight">공픈클로</span>
-          <span className="text-white/30 text-xs font-mono">v0.1</span>
+          <span className="text-white/30 text-xs font-mono">{version}</span>
         </Link>
         <nav className="flex items-center gap-1">
           {links.map(({ href, label }) => {
