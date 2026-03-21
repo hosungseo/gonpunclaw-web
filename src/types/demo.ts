@@ -106,7 +106,8 @@ export interface CatalogData {
 }
 
 export interface CrossDemoData {
-  sejong: SejongData;
-  law_cross: LawCrossData;
-  catalog: CatalogData;
+  fetchedAt?: string;
+  sejong?: SejongData;
+  law_cross?: LawCrossData;
+  catalog?: CatalogData;
 }
