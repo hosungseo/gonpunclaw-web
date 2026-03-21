@@ -45,12 +45,6 @@ npm install
 npm run dev
 ```
 
-`basePath: "/gonpunclaw-web"`이 설정되어 있으므로 아래 주소로 확인합니다.
-
-```
-http://localhost:3000/gonpunclaw-web
-```
-
 ## 프로덕션 빌드
 
 ```bash
