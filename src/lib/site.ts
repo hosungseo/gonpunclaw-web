@@ -1,4 +1,4 @@
-export const SITE_URL = 'https://seohoseong.github.io/gonpunclaw-web';
+export const SITE_URL = 'https://hosungseo.github.io/gonpunclaw-web';
 export const SITE_NAME = '공픈클로';
 export const DEFAULT_OG_IMAGE = '/opengraph-image';
 
