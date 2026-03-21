@@ -25,32 +25,6 @@
 
 Next.js 15 · React 19 · TypeScript · Tailwind CSS 4 · Framer Motion
 
-## 시작하기
-
-```bash
-npm install
-npm run dev
-```
-
-## 빌드 & 배포
-
-```bash
-npm run build        # out/ 에 정적 파일 생성
-```
-
-`main`에 push하면 GitHub Actions가 자동 배포합니다.
-
-## 프로젝트 구조
-
-```
-src/
-├── app/             # 페이지 라우트
-├── components/      # UI 컴포넌트
-├── data/            # 유스케이스 · 데모 JSON
-├── lib/             # 데이터 접근 · 검증 · 사이트 설정
-└── types/           # TypeScript 타입
-```
-
-## 라이선스
+## 저자
 
 서호성 · 행정안전부 조직국
