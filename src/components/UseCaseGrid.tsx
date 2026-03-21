@@ -36,7 +36,7 @@ export default function UseCaseGrid({ usecases, departments }: Props) {
   return (
     <div>
       {/* Filters */}
-      <div className="bg-white border border-gray-200 rounded-2xl p-5 mb-8 shadow-sm">
+      <div className="border border-slate-200 bg-white p-5 mb-8 shadow-sm">
         <div className="flex flex-col sm:flex-row gap-3">
           <div className="flex-1">
             <input
@@ -44,13 +44,13 @@ export default function UseCaseGrid({ usecases, departments }: Props) {
               placeholder="업무 키워드 검색..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent placeholder-gray-400 transition-all"
+              className="w-full border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-800 outline-none transition placeholder:text-slate-400 focus:border-cyan-500 focus:bg-white"
             />
           </div>
           <select
             value={department}
             onChange={(e) => setDepartment(e.target.value)}
-            className="px-4 py-2.5 border border-gray-200 rounded-xl text-sm bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-700 transition-all"
+            className="border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-700 outline-none transition focus:border-cyan-500 focus:bg-white"
           >
             <option value="">전체 부처</option>
             {departments.map((dep) => (
@@ -62,10 +62,10 @@ export default function UseCaseGrid({ usecases, departments }: Props) {
               <button
                 key={level}
                 onClick={() => setDifficulty(level)}
-                className={`px-4 py-2.5 rounded-xl text-sm font-medium transition-colors ${
+                className={`px-4 py-3 text-sm font-medium transition-colors ${
                   difficulty === level
-                    ? 'bg-blue-600 text-white shadow-sm'
-                    : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                    ? 'bg-slate-950 text-white'
+                    : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
                 }`}
               >
                 {level === '' ? '전체' : level}
@@ -84,8 +84,7 @@ export default function UseCaseGrid({ usecases, departments }: Props) {
           <FadeIn key={uc.no} delay={Math.min(idx % 8, 7) * 0.04}>
             <Link
               href={`/usecase/${uc.no}`}
-              className="group block bg-white rounded-2xl border border-gray-150 p-5 hover:border-blue-400 hover:shadow-md hover:scale-[1.015] transition-all duration-200"
-              style={{ borderColor: '#e8edf3' }}
+              className="group block border border-slate-200 bg-white p-5 transition-all duration-200 hover:-translate-y-1 hover:border-cyan-500 hover:shadow-[0_18px_40px_rgba(8,23,46,0.08)]"
             >
               <div className="flex items-start justify-between mb-3">
                 <span className="text-xs font-mono text-gray-400">#{uc.no}</span>
@@ -95,8 +94,8 @@ export default function UseCaseGrid({ usecases, departments }: Props) {
                 {uc.업무}
               </h3>
               <div className="flex items-center gap-2 text-xs text-gray-500">
-                <span className="bg-gray-100 px-2 py-0.5 rounded-md font-medium">{uc.부처}</span>
-                <span className="truncate text-gray-400">{uc.부서}</span>
+                <span className="bg-slate-100 px-2 py-0.5 font-medium">{uc.부처}</span>
+                <span className="truncate text-slate-400">{uc.부서}</span>
               </div>
             </Link>
           </FadeIn>
