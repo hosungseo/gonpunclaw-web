@@ -138,6 +138,26 @@ export default async function UseCaseDetailPage({
         </div>
       </Section>
 
+      {/* 산출물 예시 */}
+      {uc.산출물예시 && (
+        <Section title="📋 산출물 예시">
+          <div className="bg-gray-950 rounded-xl overflow-hidden shadow-lg">
+            <div className="bg-gray-800 px-5 py-3 flex items-center gap-3">
+              <div className="flex gap-1.5">
+                <div className="w-3 h-3 rounded-full bg-red-500" />
+                <div className="w-3 h-3 rounded-full bg-yellow-500" />
+                <div className="w-3 h-3 rounded-full bg-green-500" />
+              </div>
+              <span className="text-gray-400 text-xs font-mono">{uc.산출물예시.제목}</span>
+              <span className="ml-auto text-xs bg-gray-700 text-gray-300 px-2 py-0.5 rounded">{uc.산출물예시.형태}</span>
+            </div>
+            <div className="p-5 font-mono text-sm text-green-400 leading-relaxed whitespace-pre-wrap">
+              {uc.산출물예시.본문}
+            </div>
+          </div>
+        </Section>
+      )}
+
       {/* OpenClaw Design */}
       <Section title="오픈클로 설계">
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">

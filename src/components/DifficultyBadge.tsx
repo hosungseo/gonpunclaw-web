@@ -7,11 +7,11 @@ const colors = {
 export default function DifficultyBadge({
   level,
 }: {
-  level: "하" | "중" | "상";
+  level: string;
 }) {
   return (
     <span
-      className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${colors[level]}`}
+      className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${colors[level as keyof typeof colors] || colors["중"]}`}
     >
       난이도 {level}
     </span>
