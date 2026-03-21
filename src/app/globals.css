@@ -22,3 +22,9 @@ body {
   color: #1a202c;
   background: #f8fafc;
 }
+
+/* Hero full-bleed: pull hero up under sticky header */
+.hero-full-bleed {
+  margin-top: -56px;
+  padding-top: 56px;
+}
