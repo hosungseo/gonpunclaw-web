@@ -3,7 +3,7 @@ import FadeIn from '@/components/FadeIn';
 
 export const metadata: Metadata = {
   title: '소개 | 공픈클로',
-  description: '공픈클로: 공무원·공공기관 AI 업무자동화 100선 — 책 소개 및 작동 원리',
+  description: '공픈클로: 공공데이터를 업무 결과물로 바꾸는 공공업무 자동화 플레이북 플랫폼',
 };
 
 const steps = [
@@ -55,7 +55,7 @@ export default function AboutPage() {
             </h1>
             <p className="mx-auto mt-6 max-w-2xl text-sm leading-7 text-slate-300 sm:text-base">
               오픈API와 AI를 붙이는 데서 멈추지 않고, 실제 실무자가 바로 사용할 수 있는 브리핑·점검표·보고서로
-              결과를 바꾸는 방식을 정리한 책이자 제품입니다.
+              결과를 바꾸는 방식을 정리한 플레이북 플랫폼입니다.
             </p>
           </FadeIn>
         </div>
@@ -112,8 +112,8 @@ export default function AboutPage() {
                 운영 원칙을 먼저 세웁니다.
               </h2>
               <p className="mt-4 text-sm leading-7 text-slate-600">
-                everything-claude-code 같은 에이전트 운영 철학에서 영향을 받았지만, 공공업무 맥락에 맞게 더 단단하고
-                더 검증 가능한 방식으로 번역했습니다.
+                먼저 조사하고, 검증하고, 기록하는 흐름을 중심에 둡니다. 공공업무 자동화는 멋진 문장보다
+                근거와 재현성이 더 중요하다고 보기 때문입니다.
               </p>
             </div>
           </FadeIn>
@@ -128,6 +128,27 @@ export default function AboutPage() {
               </FadeIn>
             ))}
           </div>
+        </div>
+      </section>
+
+      <section className="bg-slate-50 py-20">
+        <div className="mx-auto max-w-4xl px-6">
+          <FadeIn>
+            <div className="max-w-3xl">
+              <p className="text-xs font-mono uppercase tracking-[0.28em] text-cyan-700">Why 100 usecases</p>
+              <h2 className="mt-4 text-3xl font-bold tracking-tight text-slate-950 sm:text-4xl">
+                왜 100개의 유스케이스인가
+              </h2>
+              <p className="mt-4 text-sm leading-7 text-slate-600">
+                공공업무 자동화는 하나의 데모로 설명되지 않습니다. 공픈클로는 조직, 법령, 통계, 민원, 부동산,
+                관보, 정책 점검처럼 서로 다른 장면을 100개의 유스케이스로 펼쳐 보이며 자동화의 범위를 보여주려 합니다.
+              </p>
+              <p className="mt-4 text-sm leading-7 text-slate-600">
+                숫자를 늘리기 위한 100선이 아니라, 공공데이터와 AI가 어디까지 실무에 들어갈 수 있는지를 체계적으로
+                보여주기 위한 100선입니다.
+              </p>
+            </div>
+          </FadeIn>
         </div>
       </section>
 

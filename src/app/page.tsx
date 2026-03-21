@@ -69,13 +69,13 @@ export default function HomePage() {
               <div className="max-w-xl">
                 <p className="text-xs font-mono uppercase tracking-[0.28em] text-cyan-700">Operating model</p>
                 <h2 className="mt-4 text-3xl font-bold tracking-tight text-slate-950 sm:text-4xl">
-                  공픈클로는 검색기가 아니라
+                  공픈클로는 공공업무 자동화를 위한
                   <br />
-                  행정용 작업 흐름입니다.
+                  플레이북 플랫폼입니다.
                 </h2>
                 <p className="mt-4 text-sm leading-7 text-slate-600">
                   좋은 공공업무 자동화는 API를 많이 붙이는 데서 끝나지 않습니다. 질문을 받고,
-                  근거를 찾고, 여러 데이터를 엮고, 최종 산출물까지 닿아야 실제로 쓸 수 있습니다.
+                  근거를 찾고, 여러 데이터를 엮고, 브리핑·보고서·점검표 같은 결과물까지 닿아야 실제로 쓸 수 있습니다.
                 </p>
               </div>
 
@@ -106,7 +106,7 @@ export default function HomePage() {
                   검증 가능한 자동화를 지향합니다.
                 </h2>
                 <p className="mt-4 text-sm leading-7 text-slate-600">
-                  ECC에서 차용한 운영 원칙을 공공업무 맥락으로 번역했습니다. 먼저 조사하고,
+                  공픈클로는 공공업무에 맞는 운영 원칙을 중심에 둡니다. 먼저 조사하고,
                   검증하고, 기록하는 방식이 공픈클로의 기본 동작입니다.
                 </p>
               </div>
@@ -187,21 +187,21 @@ export default function HomePage() {
               업무 결과물까지 자동화하세요.
             </h2>
             <p className="mx-auto mt-5 max-w-2xl text-sm leading-7 text-slate-300">
-              공픈클로는 실무자 관점에서 설계된 자동화 플레이북입니다. 구조를 보고, 대시보드를 보고,
-              실제 유스케이스까지 바로 내려가 보세요.
+              공픈클로는 실무자 관점에서 설계된 공공업무 자동화 플레이북 플랫폼입니다. 구조를 보고,
+              대시보드를 보고, 실제 유스케이스까지 바로 내려가 보세요.
             </p>
             <div className="mt-9 flex flex-col items-center justify-center gap-4 sm:flex-row">
               <Link
-                href="/dashboard"
+                href="/#usecases"
                 className="inline-flex items-center justify-center rounded-full bg-cyan-400 px-6 py-3 text-sm font-semibold text-slate-950 transition hover:bg-cyan-300"
               >
-                대시보드 보기
+                유스케이스 보기
               </Link>
               <Link
-                href="/about"
+                href="/dashboard"
                 className="inline-flex items-center justify-center rounded-full border border-white/15 bg-white/6 px-6 py-3 text-sm font-medium text-white transition hover:bg-white/10"
               >
-                책 소개 보기
+                대시보드 보기
               </Link>
             </div>
           </FadeIn>
