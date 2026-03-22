@@ -1,167 +1,450 @@
 'use client';
 
-import { motion, type Variants } from 'framer-motion';
+import { AnimatePresence, motion } from 'framer-motion';
 import Link from 'next/link';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
-const stagger: { container: Variants; item: Variants } = {
-  container: { hidden: {}, show: { transition: { staggerChildren: 0.12 } } },
-  item: {
-    hidden: { opacity: 0, y: 28 },
-    show: { opacity: 1, y: 0, transition: { duration: 0.7, ease: 'easeOut' } },
-  },
-};
+const SOURCES = [
+  { id: 'portal', name: '공공데이터포털', sub: '17,163 APIs', icon: '📡', angle: -90 },
+  { id: 'kosis', name: 'KOSIS', sub: '국가통계', icon: '📊', angle: -18 },
+  { id: 'ecos', name: 'ECOS', sub: '경제통계', icon: '💹', angle: 54 },
+  { id: 'law', name: '법령정보', sub: '국가법령센터', icon: '⚖️', angle: 126 },
+  { id: 'assembly', name: '국회·관보', sub: '의안·고시', icon: '🏛️', angle: 198 },
+] as const;
 
-const flowSteps = [
-  '질문 수신',
-  '공공 API 호출',
-  'AI 분석',
-  '행정 결과물 생성',
-];
+const CENTER = { x: 50, y: 48 };
+const RADIUS = 37;
+
+type Emotion = 'idle' | 'run' | 'happy';
+
+function srcPos(angle: number) {
+  const r = (angle * Math.PI) / 180;
+  return {
+    x: CENTER.x + RADIUS * Math.cos(r),
+    y: CENTER.y + RADIUS * Math.sin(r),
+  };
+}
+
+function Robot({ size = 46, carrying = false, emotion = 'idle' }: { size?: number; carrying?: boolean; emotion?: Emotion }) {
+  const mouth =
+    emotion === 'happy' ? 'M14,28 Q18,32 22,28' : emotion === 'run' ? 'M15,28 L21,28' : 'M14,27 Q18,30 22,27';
+
+  return (
+    <svg width={size} height={size} viewBox="0 0 36 36" fill="none" aria-hidden>
+      <line x1="18" y1="2" x2="18" y2="7" stroke="#22d3ee" strokeWidth="1.5" />
+      <circle cx="18" cy="2" r="2" fill={carrying ? '#34d399' : '#22d3ee'}>
+        {carrying && <animate attributeName="r" values="2;3;2" dur="0.6s" repeatCount="indefinite" />}
+      </circle>
+      <rect x="7" y="7" width="22" height="16" rx="5" fill="#0f172a" stroke="#22d3ee" strokeWidth="1.2" />
+      <circle cx="13" cy="14" r={emotion === 'happy' ? 2 : 3} fill="#22d3ee">
+        {emotion === 'run' && <animate attributeName="cx" values="13;14;13" dur="0.3s" repeatCount="indefinite" />}
+      </circle>
+      <circle cx="23" cy="14" r={emotion === 'happy' ? 2 : 3} fill="#22d3ee">
+        {emotion === 'run' && <animate attributeName="cx" values="23;24;23" dur="0.3s" repeatCount="indefinite" />}
+      </circle>
+      <path d={mouth} stroke="#22d3ee" strokeWidth="1.2" strokeLinecap="round" fill="none" />
+      <rect x="10" y="24" width="16" height="8" rx="3" fill="#0f172a" stroke="#22d3ee" strokeWidth="1" />
+      <rect x="11" y="32" width="5" height="3" rx="1.5" fill="#22d3ee" opacity="0.7" />
+      <rect x="20" y="32" width="5" height="3" rx="1.5" fill="#22d3ee" opacity="0.7" />
+      {carrying && (
+        <g>
+          <circle cx="30" cy="8" r="5" fill="#34d399" opacity="0.9" />
+          <text x="30" y="10.5" textAnchor="middle" fontSize="6" fill="#04111f" fontWeight="bold">
+            ✓
+          </text>
+        </g>
+      )}
+    </svg>
+  );
+}
+
+function phaseLabel(phase: string, targetIdx: number, fetchedCount: number) {
+  if (phase === 'idle') return '대기 중';
+  if (phase === 'command') return '명령 수신';
+  if (phase.startsWith('goTo')) return `${SOURCES[targetIdx]?.name ?? '소스'}(으)로 이동 중`;
+  if (phase.startsWith('fetchAt')) return `${SOURCES[targetIdx]?.name ?? '소스'} 데이터 수집`;
+  if (phase.startsWith('return')) return '데이터 획득 · 복귀 중';
+  if (phase === 'gather') return `${fetchedCount}개 소스 교차 분석 중`;
+  if (phase === 'deliver') return '결과물 생성 완료';
+  return '';
+}
 
 export default function HeroSection() {
+  const [phase, setPhase] = useState('idle');
+  const [targetIdx, setTargetIdx] = useState(-1);
+  const [fetched, setFetched] = useState<number[]>([]);
+  const [robotPos, setRobotPos] = useState(CENTER);
+  const [carrying, setCarrying] = useState(false);
+  const [emotion, setEmotion] = useState<Emotion>('idle');
+  const [cycle, setCycle] = useState(0);
+  const timersRef = useRef<number[]>([]);
+
+  const clearTimers = useCallback(() => {
+    timersRef.current.forEach((id) => window.clearTimeout(id));
+    timersRef.current = [];
+  }, []);
+
+  const wait = useCallback((fn: () => void, ms: number) => {
+    const id = window.setTimeout(fn, ms);
+    timersRef.current.push(id);
+  }, []);
+
+  const goToSource = useCallback(
+    (idx: number) => {
+      if (idx >= SOURCES.length) {
+        setPhase('gather');
+        setRobotPos(CENTER);
+        setEmotion('happy');
+        setCarrying(false);
+        wait(() => {
+          setPhase('deliver');
+          wait(() => setCycle((c) => c + 1), 4000);
+        }, 1200);
+        return;
+      }
+
+      const pos = srcPos(SOURCES[idx].angle);
+      setTargetIdx(idx);
+      setPhase(`goTo${idx}`);
+      setRobotPos(pos);
+      setEmotion('run');
+      setCarrying(false);
+
+      wait(() => {
+        setPhase(`fetchAt${idx}`);
+        setEmotion('idle');
+
+        wait(() => {
+          setCarrying(true);
+          setFetched((prev) => [...prev, idx]);
+          setPhase(`returnFrom${idx}`);
+          setRobotPos(CENTER);
+          setEmotion('run');
+
+          wait(() => {
+            setCarrying(false);
+            setEmotion('idle');
+            goToSource(idx + 1);
+          }, 700);
+        }, 650);
+      }, 700);
+    },
+    [wait]
+  );
+
+  useEffect(() => {
+    clearTimers();
+    setPhase('idle');
+    setFetched([]);
+    setRobotPos(CENTER);
+    setCarrying(false);
+    setEmotion('idle');
+    setTargetIdx(-1);
+
+    wait(() => {
+      setPhase('command');
+      wait(() => goToSource(0), 1400);
+    }, 800);
+
+    return clearTimers;
+  }, [cycle, goToSource, wait, clearTimers]);
+
+  const isMoving = phase.startsWith('goTo') || phase.startsWith('fetchAt') || phase.startsWith('return');
+  const isDelivering = phase === 'deliver';
+  const isGathering = phase === 'gather';
+  const showCmd = phase === 'command' || phase === 'goTo0';
+
+  const sourceNodes = useMemo(
+    () =>
+      SOURCES.map((src, i) => {
+        const p = srcPos(src.angle);
+        const active = phase === `goTo${i}` || phase === `fetchAt${i}` || phase === `returnFrom${i}`;
+        const done = fetched.includes(i);
+        return { ...src, index: i, pos: p, active, done };
+      }),
+    [phase, fetched]
+  );
+
   return (
-    <section className="relative overflow-hidden bg-[radial-gradient(circle_at_top_left,_rgba(74,144,226,0.34),_transparent_30%),radial-gradient(circle_at_80%_20%,_rgba(67,56,202,0.18),_transparent_28%),linear-gradient(135deg,_#04111f_0%,_#0b1f39_45%,_#091524_100%)] -mt-14 min-h-[calc(100svh-0px)] pt-14 text-white">
+    <section className="relative -mt-14 min-h-[100svh] overflow-hidden bg-[radial-gradient(ellipse_70%_50%_at_30%_20%,rgba(6,182,212,0.1),transparent_60%),radial-gradient(ellipse_50%_40%_at_75%_30%,rgba(99,102,241,0.06),transparent_50%),linear-gradient(160deg,#04111f_0%,#0b1f39_50%,#071420_100%)] pt-14 text-white">
       <div
-        className="absolute inset-0 opacity-[0.08]"
+        className="absolute inset-0 opacity-[0.035]"
         style={{
           backgroundImage:
-            'linear-gradient(rgba(255,255,255,1) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,1) 1px, transparent 1px)',
+            'linear-gradient(rgba(255,255,255,1) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,1) 1px,transparent 1px)',
           backgroundSize: '72px 72px',
         }}
       />
-      <div className="absolute inset-0 bg-[linear-gradient(to_bottom,rgba(4,17,31,0.1),rgba(4,17,31,0.45)_60%,rgba(4,17,31,0.75))]" />
+      <div className="absolute inset-0 bg-[linear-gradient(to_bottom,rgba(4,17,31,0.05),rgba(4,17,31,0.5)_65%,rgba(4,17,31,0.8))]" />
 
-      <div className="relative z-10 mx-auto grid min-h-[calc(100svh-56px)] max-w-7xl grid-cols-1 items-center gap-14 px-6 py-16 lg:grid-cols-[minmax(0,1.05fr)_minmax(420px,0.95fr)] lg:px-10">
-        <motion.div
-          variants={stagger.container}
-          initial="hidden"
-          animate="show"
-          className="max-w-2xl"
-        >
+      <div className="relative z-10 mx-auto grid min-h-[calc(100svh-56px)] max-w-7xl grid-cols-1 items-center gap-10 px-6 py-16 lg:grid-cols-[minmax(0,0.95fr)_minmax(380px,1.05fr)] lg:gap-14 lg:px-10">
+        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.6 }} className="max-w-[520px]">
           <motion.p
-            variants={stagger.item}
-            className="mb-5 text-[11px] font-mono uppercase tracking-[0.36em] text-cyan-300/80"
+            initial={{ opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.1, duration: 0.6 }}
+            className="mb-5 text-[11px] font-mono uppercase tracking-[0.32em] text-cyan-300/55"
           >
-            Public data automation for government work
+            공공데이터 × AI 업무자동화
           </motion.p>
 
           <motion.h1
-            variants={stagger.item}
-            className="text-[clamp(4rem,10vw,8.8rem)] font-black leading-[0.88] tracking-[-0.08em] text-white"
+            initial={{ opacity: 0, y: 24 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.2, duration: 0.7, ease: 'easeOut' }}
+            className="text-[clamp(3.5rem,9vw,7rem)] font-black leading-[0.9] tracking-[-0.06em]"
           >
             공픈클로
           </motion.h1>
 
           <motion.p
-            variants={stagger.item}
-            className="mt-6 max-w-lg text-[clamp(1.2rem,2vw,1.7rem)] font-medium leading-snug text-slate-100"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.35, duration: 0.6 }}
+            className="mt-5 text-[clamp(1.15rem,2.2vw,1.6rem)] font-semibold leading-snug"
           >
-            공공데이터를 읽고, 행정 결과물로 바꾸는 실무형 AI 자동화.
+            시키면 알아서 캐옵니다.
           </motion.p>
 
           <motion.p
-            variants={stagger.item}
-            className="mt-4 max-w-md text-sm leading-7 text-slate-300"
+            initial={{ opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.45, duration: 0.6 }}
+            className="mt-2 max-w-[400px] text-[15px] leading-[1.8] text-slate-400"
           >
-            질문 하나로 API를 묶고, 분석하고, 보고서·브리핑·점검표까지 바로 만드는 100개 유스케이스.
+            공공데이터포털·KOSIS·ECOS·법령을 뒤져서
+            <br />
+            브리핑·보고서·점검표까지 바로 만드는 AI.
           </motion.p>
 
-          <motion.div variants={stagger.item} className="mt-8 flex flex-col gap-3 sm:flex-row">
+          <motion.div
+            initial={{ opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.55, duration: 0.6 }}
+            className="mt-8 overflow-hidden rounded-xl border border-white/[0.06]"
+          >
+            <div className="flex items-start gap-2.5 bg-white/[0.02] px-4 py-3.5 text-[13px] leading-[1.7] text-slate-500">
+              <span className="mt-0.5 shrink-0 text-base">😩</span>
+              <div>
+                <span className="font-bold text-slate-400">기존</span>{' '}
+                포털 가입 → 키 발급 → API 문서 해독 → 코드 작성 → 에러 디버깅 → 데이터 파싱 → 분석 → 보고서
+              </div>
+            </div>
+            <div className="flex items-start gap-2.5 border-t border-white/[0.06] bg-cyan-400/[0.04] px-4 py-3.5 text-[13px] leading-[1.7] text-slate-200">
+              <span className="mt-0.5 shrink-0 text-base">🤖</span>
+              <div>
+                <span className="font-bold text-cyan-400">공픈클로</span>{' '}
+                <span className="font-semibold text-white">&quot;세종시 현황 정리해줘&quot;</span>
+                <span className="text-slate-500"> — 끝.</span>
+              </div>
+            </div>
+          </motion.div>
+
+          <motion.div
+            initial={{ opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.65, duration: 0.6 }}
+            className="mt-9 flex flex-col gap-3 sm:flex-row"
+          >
             <Link
               href="#usecases"
-              className="inline-flex items-center justify-center rounded-full bg-cyan-400 px-6 py-3 text-sm font-semibold text-slate-950 transition hover:bg-cyan-300"
+              className="inline-flex items-center justify-center rounded-full bg-cyan-400 px-7 py-3 text-sm font-semibold text-slate-950 transition hover:bg-cyan-300"
             >
-              100개 유스케이스 보기
+              유스케이스 둘러보기
             </Link>
             <Link
               href="/dashboard"
-              className="inline-flex items-center justify-center rounded-full border border-white/20 bg-white/6 px-6 py-3 text-sm font-medium text-white transition hover:bg-white/12"
+              className="inline-flex items-center justify-center rounded-full border border-white/12 bg-white/[0.06] px-7 py-3 text-sm font-medium text-white transition hover:bg-white/10"
             >
-              실제 대시보드 체험
+              대시보드 체험
             </Link>
           </motion.div>
         </motion.div>
 
         <motion.div
-          initial={{ opacity: 0, x: 32, y: 14 }}
-          animate={{ opacity: 1, x: 0, y: 0 }}
-          transition={{ duration: 0.8, ease: 'easeOut', delay: 0.2 }}
-          className="relative mx-auto w-full max-w-[560px]"
+          initial={{ opacity: 0, scale: 0.95 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ delay: 0.3, duration: 0.7 }}
+          className="relative mx-auto aspect-[1/0.9] w-full max-w-[560px]"
         >
-          <motion.div
-            animate={{ y: [0, -10, 0] }}
-            transition={{ duration: 7, repeat: Infinity, ease: 'easeInOut' }}
-            className="absolute -left-6 top-10 hidden rounded-full border border-cyan-300/25 bg-cyan-300/10 px-3 py-1 text-[11px] font-medium text-cyan-100 lg:block"
-          >
-            질문 → 호출 → 분석 → 결과물
-          </motion.div>
-
-          <div className="relative overflow-hidden rounded-[34px] border border-white/14 bg-white/8 shadow-[0_30px_120px_rgba(2,12,27,0.5)] backdrop-blur-xl">
-            <div className="border-b border-white/10 px-5 py-4">
-              <div className="flex items-center gap-3">
-                <div className="flex h-10 w-10 items-center justify-center rounded-full bg-cyan-400 font-bold text-slate-950">공</div>
-                <div>
-                  <div className="text-sm font-semibold text-white">공픈클로 에이전트</div>
-                  <div className="text-xs text-slate-300">OpenClaw · 행정 자동화 워크플로우</div>
-                </div>
-                <div className="ml-auto flex items-center gap-2 text-xs text-emerald-300">
-                  <span className="h-2 w-2 rounded-full bg-emerald-400" />
-                  online
-                </div>
-              </div>
-            </div>
-
-            <div className="space-y-5 px-5 py-5">
-              <div className="ml-auto max-w-[78%] rounded-[22px] rounded-br-md bg-cyan-400 px-4 py-3 text-sm font-medium leading-6 text-slate-950 shadow-lg shadow-cyan-950/20">
-                이번 주 세종시 현황 정리해줘. 인구이동이랑 아파트, 미세먼지도 같이.
-              </div>
-
-              <div className="max-w-[88%] rounded-[26px] rounded-bl-md bg-slate-950/70 px-4 py-4 text-sm leading-6 text-slate-100 ring-1 ring-white/8">
-                <div className="mb-3 flex items-center gap-2 text-[11px] font-mono uppercase tracking-[0.24em] text-cyan-300/70">
-                  <span>live workflow</span>
-                  <span className="h-px flex-1 bg-white/10" />
-                </div>
-                <div className="grid gap-2 text-slate-200/92 sm:grid-cols-2">
-                  {flowSteps.map((step, idx) => (
-                    <motion.div
-                      key={step}
-                      initial={{ opacity: 0.55, x: 10 }}
-                      animate={{ opacity: [0.55, 1, 0.82], x: [10, 0, 0] }}
-                      transition={{ delay: 0.35 + idx * 0.18, duration: 0.8 }}
-                      className="flex items-center gap-2"
-                    >
-                      <span className="flex h-6 w-6 items-center justify-center rounded-full border border-cyan-300/25 bg-cyan-300/8 text-[11px] font-semibold text-cyan-200">
-                        {idx + 1}
-                      </span>
-                      <span>{step}</span>
-                    </motion.div>
-                  ))}
-                </div>
-              </div>
-
-              <motion.div
-                initial={{ opacity: 0, y: 18 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.8, duration: 0.7 }}
-                className="rounded-[28px] bg-[linear-gradient(180deg,rgba(255,255,255,0.98),rgba(241,247,255,0.96))] p-5 text-slate-900 shadow-[0_18px_60px_rgba(3,15,36,0.22)]"
+          <svg className="absolute inset-0 z-[1] h-full w-full" viewBox="0 0 100 96" preserveAspectRatio="xMidYMid meet">
+            {sourceNodes.map((src) => (
+              <line
+                key={src.id}
+                x1={CENTER.x}
+                y1={CENTER.y}
+                x2={src.pos.x}
+                y2={src.pos.y}
+                stroke={src.active ? '#22d3ee' : src.done ? 'rgba(34,211,238,0.18)' : 'rgba(255,255,255,0.04)'}
+                strokeWidth={src.active ? 0.6 : 0.3}
+                strokeDasharray={src.active ? '2 2.5' : src.done ? '1 3' : 'none'}
+                className="transition-all duration-300"
               >
-                <div className="flex items-center justify-between border-b border-slate-200 pb-3">
-                  <div>
-                    <div className="text-xs font-mono uppercase tracking-[0.24em] text-slate-400">weekly brief</div>
-                    <div className="mt-1 text-lg font-bold">세종시 주간 점검 브리핑</div>
-                  </div>
-                  <div className="rounded-full bg-slate-900 px-3 py-1 text-[11px] font-semibold text-cyan-300">자동 생성</div>
-                </div>
-                <div className="mt-4 space-y-3 text-sm leading-6 text-slate-700">
-                  <p><strong className="text-slate-950">인구이동</strong> 서울→세종 전입이 직전 주 대비 증가했습니다.</p>
-                  <p><strong className="text-slate-950">아파트</strong> 평균 실거래가는 상승, 거래량은 보합입니다.</p>
-                  <p><strong className="text-slate-950">대기질</strong> PM10은 보통 수준으로 외부활동 제약은 크지 않습니다.</p>
-                </div>
-              </motion.div>
+                {src.active && <animate attributeName="stroke-dashoffset" from="0" to="-20" dur="0.8s" repeatCount="indefinite" />}
+              </line>
+            ))}
+          </svg>
+
+          <div
+            className="absolute z-[2] flex items-center justify-center rounded-full border transition-all duration-500"
+            style={{
+              left: `${CENTER.x}%`,
+              top: `${CENTER.y}%`,
+              transform: 'translate(-50%,-50%)',
+              width: 68,
+              height: 68,
+              borderColor: isGathering || isDelivering ? 'rgba(34,211,238,0.35)' : 'rgba(255,255,255,0.06)',
+              background: isGathering ? 'rgba(34,211,238,0.05)' : 'transparent',
+            }}
+          >
+            <div className="flex max-w-[36px] flex-wrap justify-center gap-[3px]">
+              {fetched.map((fi) => (
+                <motion.div key={fi} initial={{ scale: 0 }} animate={{ scale: 1 }} className="h-2 w-2 rounded-full bg-cyan-400 opacity-70" />
+              ))}
             </div>
           </div>
+          <div
+            className="absolute z-[2] whitespace-nowrap text-center text-[10px] font-bold text-slate-600"
+            style={{ left: `${CENTER.x}%`, top: `${CENTER.y}%`, transform: 'translate(-50%, calc(-50% + 42px))' }}
+          >
+            홈베이스
+          </div>
+
+          {sourceNodes.map((src) => (
+            <div
+              key={src.id}
+              className="absolute z-[5] flex flex-col items-center gap-1.5 transition-all duration-300"
+              style={{
+                left: `${src.pos.x}%`,
+                top: `${src.pos.y}%`,
+                transform: 'translate(-50%,-50%)',
+                opacity: src.active ? 1 : src.done ? 0.5 : 0.65,
+              }}
+            >
+              <div
+                className="relative flex items-center justify-center rounded-[14px] text-[22px] transition-all duration-300"
+                style={{
+                  width: 50,
+                  height: 50,
+                  background: src.active ? 'rgba(34,211,238,0.12)' : src.done ? 'rgba(52,211,153,0.06)' : 'rgba(255,255,255,0.04)',
+                  border: `1.5px solid ${src.active ? 'rgba(34,211,238,0.5)' : src.done ? 'rgba(52,211,153,0.25)' : 'rgba(255,255,255,0.08)'}`,
+                  boxShadow: src.active ? '0 0 20px rgba(34,211,238,0.12)' : 'none',
+                }}
+              >
+                {src.icon}
+                {src.done && !src.active && (
+                  <motion.div
+                    initial={{ scale: 0 }}
+                    animate={{ scale: 1 }}
+                    className="absolute -right-1.5 -top-1.5 flex h-4 w-4 items-center justify-center rounded-full bg-emerald-400 text-[9px] font-extrabold text-slate-950"
+                  >
+                    ✓
+                  </motion.div>
+                )}
+              </div>
+              <div className="text-center">
+                <div className="text-[11px] font-bold text-slate-200">{src.name}</div>
+                <div className="mt-0.5 text-[9px] text-slate-600">{src.sub}</div>
+              </div>
+            </div>
+          ))}
+
+          <motion.div
+            className="absolute z-[15]"
+            animate={{ left: `${robotPos.x}%`, top: `${robotPos.y}%` }}
+            transition={{ duration: 0.65, ease: [0.34, 1.56, 0.64, 1] }}
+            style={{
+              transform: 'translate(-50%, -50%)',
+              filter: carrying ? 'drop-shadow(0 0 12px rgba(52,211,153,0.4))' : 'drop-shadow(0 0 8px rgba(34,211,238,0.3))',
+            }}
+          >
+            <Robot size={46} carrying={carrying} emotion={emotion} />
+          </motion.div>
+
+          <AnimatePresence>
+            {showCmd && (
+              <motion.div
+                key={`cmd-${cycle}`}
+                initial={{ opacity: 0, y: 12, scale: 0.95 }}
+                animate={{ opacity: 1, y: 0, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.9 }}
+                transition={{ duration: 0.35 }}
+                className="absolute bottom-[5%] right-[2%] z-20 max-w-[220px] rounded-[18px_18px_4px_18px] bg-cyan-400 px-3.5 py-2.5 text-[12.5px] font-semibold leading-snug text-slate-950 shadow-[0_8px_24px_rgba(34,211,238,0.15)]"
+              >
+                세종시 현황 브리핑 만들어줘
+                <div className="mt-1 text-[9.5px] font-normal text-slate-950/40">👤 사무관</div>
+              </motion.div>
+            )}
+          </AnimatePresence>
+
+          <div className="absolute left-1/2 top-[3%] z-20 flex -translate-x-1/2 items-center gap-2 rounded-full border border-white/[0.08] bg-slate-950/90 px-3.5 py-1.5">
+            <div
+              className="h-1.5 w-1.5 rounded-full transition-colors duration-300"
+              style={{
+                background: isDelivering ? '#34d399' : isMoving ? '#22d3ee' : '#475569',
+                animation: phase.startsWith('goTo') || phase.startsWith('fetchAt') ? 'pulse 0.8s infinite' : 'none',
+              }}
+            />
+            <span className="font-mono text-[10.5px] font-semibold transition-colors duration-300" style={{ color: isDelivering ? '#34d399' : isMoving ? '#22d3ee' : '#64748b' }}>
+              {phaseLabel(phase, targetIdx, fetched.length)}
+            </span>
+          </div>
+
+          <div className="absolute bottom-[2%] left-1/2 z-20 flex -translate-x-1/2 gap-1">
+            {SOURCES.map((_, i) => (
+              <div key={i} className="h-1 w-6 rounded-full transition-colors duration-300" style={{ background: fetched.includes(i) ? '#22d3ee' : 'rgba(255,255,255,0.08)' }} />
+            ))}
+          </div>
+
+          <AnimatePresence>
+            {isDelivering && (
+              <motion.div
+                key={`result-${cycle}`}
+                initial={{ opacity: 0, y: 24, scale: 0.95 }}
+                animate={{ opacity: 1, y: 0, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.9 }}
+                transition={{ duration: 0.5, ease: 'easeOut' }}
+                className="absolute left-1/2 top-1/2 z-[25] w-[300px] -translate-x-1/2 -translate-y-1/2 rounded-[20px] bg-[linear-gradient(180deg,rgba(255,255,255,0.97),rgba(241,247,255,0.95))] p-[18px] text-slate-900 shadow-[0_24px_60px_rgba(3,15,36,0.45),0_0_40px_rgba(34,211,238,0.06)]"
+              >
+                <div className="mb-2.5 flex items-center justify-between border-b border-slate-200 pb-2.5">
+                  <div>
+                    <div className="font-mono text-[9.5px] uppercase tracking-[0.15em] text-slate-400">auto brief</div>
+                    <div className="mt-0.5 text-[14px] font-extrabold">세종시 주간 현황</div>
+                  </div>
+                  <div className="rounded-[10px] bg-slate-900 px-2.5 py-1 text-[9.5px] font-bold text-cyan-400">자동 생성</div>
+                </div>
+                <div className="space-y-0.5 text-[12px] leading-[2] text-slate-500">
+                  <p>
+                    <strong className="text-slate-900">인구</strong> 서울→세종 전입 전주 대비 ↑
+                  </p>
+                  <p>
+                    <strong className="text-slate-900">부동산</strong> 평균 매매가 상승, 거래량 보합
+                  </p>
+                  <p>
+                    <strong className="text-slate-900">대기질</strong> PM10 보통 — 외부활동 양호
+                  </p>
+                </div>
+                <div className="mt-2.5 flex gap-1 border-t border-slate-200 pt-2">
+                  {SOURCES.map((s) => (
+                    <span key={s.id} className="rounded-md bg-slate-100 px-1.5 py-0.5 text-[8.5px] font-medium text-slate-500">
+                      {s.name.length > 4 ? s.name.slice(0, 4) : s.name}
+                    </span>
+                  ))}
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
         </motion.div>
       </div>
+
+      <div className="pointer-events-none absolute bottom-0 left-0 right-0 h-28 bg-[linear-gradient(transparent,#04111f)]" />
+
+      <style>{`
+        @keyframes pulse {
+          0%, 100% { opacity: 1; }
+          50% { opacity: 0.3; }
+        }
+      `}</style>
     </section>
   );
 }
