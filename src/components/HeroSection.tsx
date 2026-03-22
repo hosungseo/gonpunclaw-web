@@ -353,11 +353,6 @@ export default function HeroSection() {
   const isDelivering = phase === 'deliver';
   const isGathering = phase === 'gather';
   const canPreview = isDelivering;
-  const liveCaption = liveLoading
-    ? '실시간 신호 불러오는 중…'
-    : liveSignal
-      ? `${liveSignal.headline} · ${liveSignal.fetchedAt} 기준`
-      : liveError;
 
   const handleSubmit = (event?: FormEvent) => {
     event?.preventDefault();
@@ -577,7 +572,7 @@ export default function HeroSection() {
               <div className="mt-0.5 text-[8.5px] font-medium text-slate-600">cross-source synthesis</div>
             </div>
 
-            {sourceNodes.map((src, idx) => (
+            {sourceNodes.map((src) => (
               <div
                 key={src.id}
                 className="absolute z-[5] flex flex-col items-center gap-1 transition-all duration-300 sm:gap-1.5"
