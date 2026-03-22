@@ -5,11 +5,11 @@ import Link from 'next/link';
 import { FormEvent, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
 const SOURCES = [
-  { id: 'portal', name: '공공데이터포털', sub: '17,163 APIs', icon: '📡', angle: -90 },
-  { id: 'kosis', name: 'KOSIS', sub: '국가통계', icon: '📊', angle: -18 },
-  { id: 'ecos', name: 'ECOS', sub: '경제통계', icon: '💹', angle: 54 },
-  { id: 'law', name: '법령정보', sub: '국가법령센터', icon: '⚖️', angle: 126 },
-  { id: 'assembly', name: '국회·관보', sub: '의안·고시', icon: '🏛️', angle: 198 },
+  { id: 'portal', name: '공공데이터포털', sub: '행정 데이터', icon: '📡', angle: -90 },
+  { id: 'kosis', name: 'KOSIS', sub: '통계', icon: '📊', angle: -18 },
+  { id: 'ecos', name: 'ECOS', sub: '경제', icon: '💹', angle: 54 },
+  { id: 'law', name: '법령정보', sub: '규범', icon: '⚖️', angle: 126 },
+  { id: 'assembly', name: '국회·관보', sub: '고시·의안', icon: '🏛️', angle: 198 },
 ] as const;
 
 const CENTER = { x: 50, y: 48 };
@@ -43,7 +43,7 @@ const SCENARIOS: Scenario[] = [
     command: '세종시 현황 브리핑 만들어줘',
     eyebrow: '행정 브리핑',
     title: '세종시 주간 현황',
-    summary: '인구·부동산·생활지표를 교차해 이번 주 체크포인트를 정리했습니다.',
+    summary: '통계·행정 데이터·실시간 신호를 함께 엮어 이번 주 체크포인트를 정리했습니다.',
     lines: [
       { label: '인구', text: '서울→세종 전입 흐름이 전주 대비 상승했습니다.' },
       { label: '부동산', text: '평균 매매가는 상승, 거래량은 보합권입니다.' },
@@ -72,7 +72,7 @@ const SCENARIOS: Scenario[] = [
     command: '이번 주 관보 핵심만 정리해줘',
     eyebrow: '정책 검토 메모',
     title: '관보 핵심 브리핑',
-    summary: '중요 고시와 후속 검토 포인트를 부처 영향 기준으로 추렸습니다.',
+    summary: '관보·법령정보를 교차해 중요한 고시와 후속 검토 포인트를 추렸습니다.',
     lines: [
       { label: '고시', text: '중요 공고 2건 선별, 직접 영향 부처를 표시했습니다.' },
       { label: '법령', text: '후속 검토가 필요한 조문 1건을 별도 표기했습니다.' },
@@ -101,7 +101,7 @@ const SCENARIOS: Scenario[] = [
     command: '교원정원 점검표 만들어줘',
     eyebrow: '점검 보고서',
     title: '교원정원 점검표',
-    summary: '최근 변동 추세와 정책 수요를 엮어 점검표 형식으로 정리했습니다.',
+    summary: '정원 추세·정책 수요·법령 맥락을 함께 엮어 점검표 형식으로 정리했습니다.',
     lines: [
       { label: '정원', text: '최근 변동 폭과 지역별 편차를 한 번에 볼 수 있게 구성했습니다.' },
       { label: '수요', text: '정책 수요 대비 인력 이슈를 별도 항목으로 분리했습니다.' },
@@ -420,18 +420,18 @@ export default function HeroSection() {
               transition={{ delay: 0.45, duration: 0.6 }}
               className="mt-2 max-w-[430px] text-[15px] leading-[1.8] text-slate-400"
             >
-              공공데이터를 찾아서, 엮어서,
+              공공데이터를 자동으로 찾아오고,
               <br />
-              조회가 아니라 제출 가능한 결과물로 돌려주는 AI.
+              서로 엮어 제출 가능한 결과물로 바꾸는 AI.
             </motion.p>
 
             <motion.p
               initial={{ opacity: 0, y: 16 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.52, duration: 0.6 }}
-              className="mt-3 max-w-[450px] text-[13px] leading-[1.8] text-slate-500"
+              className="mt-3 max-w-[470px] text-[13px] leading-[1.8] text-slate-500"
             >
-              단일 API 호출이 아니라 여러 공공 소스를 교차해 브리핑·보고서·점검표 같은 업무 산출물로 정리합니다.
+              통계·법령·고시·행정 데이터를 알아서 찾고, 교차 분석해 브리핑·보고서·점검표 같은 업무 산출물로 정리합니다.
             </motion.p>
 
             <motion.form
@@ -498,7 +498,7 @@ export default function HeroSection() {
                 <div>
                   <span className="font-bold text-cyan-400">공픈클로</span>{' '}
                   <span className="font-semibold text-white">&quot;{submittedQuery}&quot;</span>
-                  <span className="text-slate-500"> → 실행 중</span>
+                  <span className="text-slate-500"> → 자동으로 찾고, 엮고, 정리</span>
                 </div>
               </div>
             </motion.div>
@@ -549,7 +549,7 @@ export default function HeroSection() {
             className="relative mx-auto aspect-[1/0.9] w-full max-w-[560px]"
           >
             <div className="absolute left-1/2 top-[11%] z-20 hidden -translate-x-1/2 rounded-full border border-cyan-300/15 bg-cyan-300/8 px-3 py-1 text-[10px] font-medium text-cyan-100/85 sm:block">
-              질문 → 수집 → 교차분석 → 결과물
+              자동 탐색 → 수집 → 교차분석 → 결과물
             </div>
 
             <svg className="absolute inset-0 z-[1] hidden h-full w-full sm:block" viewBox="0 0 100 96" preserveAspectRatio="xMidYMid meet">
@@ -572,8 +572,9 @@ export default function HeroSection() {
             <div
               className="absolute left-1/2 top-[41%] z-[2] flex h-[68px] w-[68px] -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full border transition-all duration-500 sm:top-[48%]"
               style={{
-                borderColor: isGathering || isDelivering ? 'rgba(34,211,238,0.35)' : 'rgba(255,255,255,0.06)',
-                background: isGathering ? 'rgba(34,211,238,0.05)' : 'transparent',
+                borderColor: isGathering || isDelivering ? 'rgba(34,211,238,0.4)' : 'rgba(255,255,255,0.06)',
+                background: isGathering || isDelivering ? 'rgba(34,211,238,0.07)' : 'transparent',
+                boxShadow: isGathering || isDelivering ? '0 0 30px rgba(34,211,238,0.12)' : 'none',
               }}
             >
               <div className="flex max-w-[36px] flex-wrap justify-center gap-[3px]">
@@ -582,8 +583,9 @@ export default function HeroSection() {
                 ))}
               </div>
             </div>
-            <div className="absolute left-1/2 top-[calc(41%+42px)] z-[2] -translate-x-1/2 text-center text-[10px] font-bold text-slate-600 sm:top-[calc(48%+42px)]">
-              홈베이스
+            <div className="absolute left-1/2 top-[calc(41%+38px)] z-[2] -translate-x-1/2 text-center sm:top-[calc(48%+38px)]">
+              <div className="text-[10px] font-bold text-slate-500">조합 엔진</div>
+              <div className="mt-0.5 text-[8.5px] font-medium text-slate-600">cross-source synthesis</div>
             </div>
 
             {sourceNodes.map((src, idx) => (
@@ -696,6 +698,14 @@ export default function HeroSection() {
                     </div>
                   </div>
                   <p className="mb-2.5 text-[11px] leading-[1.65] text-slate-500">{activeScenario.summary}</p>
+                  <div className="mb-2.5 rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-[10.5px] leading-[1.6] text-slate-700">
+                    <strong className="text-slate-900">복합 근거</strong>{' '}
+                    {activeScenarioId === 'sejong'
+                      ? '행정 데이터 + 통계 + 실시간 신호 결합'
+                      : activeScenarioId === 'gazette'
+                        ? '관보 + 법령정보 교차 확인'
+                        : '정원 추세 + 정책 수요 + 법령 맥락 결합'}
+                  </div>
                   {activeScenarioId === 'sejong' && liveSignal && (
                     <div className="mb-2.5 rounded-xl border border-emerald-200 bg-emerald-50 px-3 py-2 text-[10.5px] leading-[1.6] text-emerald-900">
                       <strong>{liveSignal.headline}</strong>
