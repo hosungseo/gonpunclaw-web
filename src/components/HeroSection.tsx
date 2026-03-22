@@ -606,7 +606,7 @@ export default function HeroSection() {
             {sourceNodes.map((src, idx) => (
               <div
                 key={src.id}
-                className={`absolute z-[5] flex flex-col items-center gap-1.5 transition-all duration-300 ${idx > 3 ? 'hidden sm:flex' : ''}`}
+                className="absolute z-[5] flex flex-col items-center gap-1 transition-all duration-300 sm:gap-1.5"
                 style={{
                   left: `${src.pos.x}%`,
                   top: `${src.pos.y}%`,
@@ -615,7 +615,7 @@ export default function HeroSection() {
                 }}
               >
                 <div
-                  className="relative flex h-[50px] w-[50px] items-center justify-center rounded-[14px] text-[22px] transition-all duration-300"
+                  className="relative flex h-[42px] w-[42px] items-center justify-center rounded-[12px] text-[19px] transition-all duration-300 sm:h-[50px] sm:w-[50px] sm:rounded-[14px] sm:text-[22px]"
                   style={{
                     background: src.active ? 'rgba(34,211,238,0.12)' : src.done ? 'rgba(52,211,153,0.06)' : 'rgba(255,255,255,0.04)',
                     border: `1.5px solid ${src.active ? 'rgba(34,211,238,0.5)' : src.done ? 'rgba(52,211,153,0.25)' : 'rgba(255,255,255,0.08)'}`,
@@ -634,8 +634,8 @@ export default function HeroSection() {
                   )}
                 </div>
                 <div className="text-center">
-                  <div className="text-[11px] font-bold text-slate-200">{src.name}</div>
-                  <div className="mt-0.5 text-[9px] text-slate-600">{src.sub}</div>
+                  <div className="text-[10px] font-bold text-slate-200 sm:text-[11px]">{src.name}</div>
+                  <div className="mt-0.5 text-[8px] text-slate-600 sm:text-[9px]">{src.sub}</div>
                 </div>
               </div>
             ))}
