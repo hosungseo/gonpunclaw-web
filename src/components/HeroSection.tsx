@@ -14,25 +14,25 @@ const SOURCES = [
 
 const RESULT_CARDS = [
   {
-    eyebrow: 'auto brief',
+    eyebrow: '행정 브리핑',
     title: '세종시 주간 현황',
     lines: [
-      { label: '인구', text: '서울→세종 전입 전주 대비 ↑' },
-      { label: '부동산', text: '평균 매매가 상승, 거래량 보합' },
-      { label: '대기질', text: 'PM10 보통 — 외부활동 양호' },
+      { label: '인구', text: '서울→세종 전입 전주 대비 증가' },
+      { label: '부동산', text: '평균 매매가 상승, 거래량은 보합' },
+      { label: '판단', text: '이번 주 점검 포인트까지 함께 정리' },
     ],
   },
   {
-    eyebrow: 'policy memo',
+    eyebrow: '정책 검토 메모',
     title: '관보 핵심 브리핑',
     lines: [
       { label: '고시', text: '중요 고시 2건 추출, 부처별 영향 표시' },
-      { label: '법령', text: '후속 확인 필요 조문 1건 표시' },
+      { label: '법령', text: '후속 확인 필요 조문 1건 선별' },
       { label: '메모', text: '실무 검토 포인트까지 자동 정리' },
     ],
   },
   {
-    eyebrow: 'work report',
+    eyebrow: '점검 보고서',
     title: '교원정원 점검표',
     lines: [
       { label: '정원', text: '최근 변동 추세와 부처별 편차 정리' },
@@ -97,7 +97,7 @@ function phaseLabel(phase: string, targetIdx: number, fetchedCount: number) {
   if (phase.startsWith('fetchAt')) return `${SOURCES[targetIdx]?.name ?? '소스'} 데이터 수집`;
   if (phase.startsWith('return')) return '데이터 획득 · 복귀 중';
   if (phase === 'gather') return `${fetchedCount}개 소스 교차 분석 중`;
-  if (phase === 'deliver') return '결과물 생성 완료';
+  if (phase === 'deliver') return '업무 결과물 생성 완료';
   return '';
 }
 
@@ -130,8 +130,8 @@ export default function HeroSection() {
         setCarrying(false);
         wait(() => {
           setPhase('deliver');
-          wait(() => setCycle((c) => c + 1), 4000);
-        }, 1200);
+          wait(() => setCycle((c) => c + 1), 4200);
+        }, 1300);
         return;
       }
 
@@ -157,9 +157,9 @@ export default function HeroSection() {
             setCarrying(false);
             setEmotion('idle');
             goToSource(idx + 1);
-          }, 650);
-        }, 550);
-      }, 650);
+          }, 760);
+        }, 620);
+      }, 760);
     },
     [wait]
   );
@@ -175,8 +175,8 @@ export default function HeroSection() {
 
     wait(() => {
       setPhase('command');
-      wait(() => goToSource(0), 1300);
-    }, 800);
+      wait(() => goToSource(0), 1450);
+    }, 900);
 
     return clearTimers;
   }, [cycle, goToSource, wait, clearTimers]);
@@ -244,18 +244,27 @@ export default function HeroSection() {
             initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.45, duration: 0.6 }}
-            className="mt-2 max-w-[390px] text-[15px] leading-[1.8] text-slate-400"
+            className="mt-2 max-w-[410px] text-[15px] leading-[1.8] text-slate-400"
           >
             공공데이터를 찾아서, 엮어서,
             <br />
-            브리핑·보고서·점검표까지 바로 만드는 AI.
+            조회가 아니라 제출 가능한 결과물로 돌려주는 AI.
+          </motion.p>
+
+          <motion.p
+            initial={{ opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.52, duration: 0.6 }}
+            className="mt-3 max-w-[420px] text-[13px] leading-[1.8] text-slate-500"
+          >
+            단일 API 호출이 아니라 여러 공공 소스를 교차해 브리핑·보고서·점검표 같은 업무 산출물로 정리합니다.
           </motion.p>
 
           <motion.div
             initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.55, duration: 0.6 }}
-            className="mt-8 overflow-hidden rounded-xl border border-white/[0.06]"
+            transition={{ delay: 0.58, duration: 0.6 }}
+            className="mt-8 overflow-hidden rounded-xl border border-white/[0.06] sm:block"
           >
             <div className="flex items-start gap-2.5 bg-white/[0.02] px-4 py-3.5 text-[13px] leading-[1.7] text-slate-500">
               <span className="mt-0.5 shrink-0 text-base">😩</span>
@@ -284,7 +293,7 @@ export default function HeroSection() {
               href="#usecases"
               className="inline-flex items-center justify-center rounded-full bg-cyan-400 px-7 py-3 text-sm font-semibold text-slate-950 transition hover:bg-cyan-300"
             >
-              유스케이스 둘러보기
+              자동화 사례 보기
             </Link>
             <Link
               href="/dashboard"
@@ -301,6 +310,10 @@ export default function HeroSection() {
           transition={{ delay: 0.3, duration: 0.7 }}
           className="relative mx-auto aspect-[1/0.88] w-full max-w-[560px] sm:aspect-[1/0.9]"
         >
+          <div className="absolute left-1/2 top-[11%] z-20 hidden -translate-x-1/2 rounded-full border border-cyan-300/15 bg-cyan-300/8 px-3 py-1 text-[10px] font-medium text-cyan-100/85 sm:block">
+            질문 → 수집 → 교차분석 → 결과물
+          </div>
+
           <svg className="absolute inset-0 z-[1] hidden h-full w-full sm:block" viewBox="0 0 100 96" preserveAspectRatio="xMidYMid meet">
             {sourceNodes.map((src) => (
               <line
@@ -310,11 +323,11 @@ export default function HeroSection() {
                 x2={src.pos.x}
                 y2={src.pos.y}
                 stroke={src.active ? '#22d3ee' : src.done ? 'rgba(34,211,238,0.18)' : 'rgba(255,255,255,0.04)'}
-                strokeWidth={src.active ? 0.6 : 0.3}
+                strokeWidth={src.active ? 0.55 : 0.28}
                 strokeDasharray={src.active ? '2 2.5' : src.done ? '1 3' : 'none'}
                 className="transition-all duration-300"
               >
-                {src.active && <animate attributeName="stroke-dashoffset" from="0" to="-20" dur="0.8s" repeatCount="indefinite" />}
+                {src.active && <animate attributeName="stroke-dashoffset" from="0" to="-20" dur="0.95s" repeatCount="indefinite" />}
               </line>
             ))}
           </svg>
@@ -352,7 +365,7 @@ export default function HeroSection() {
                 style={{
                   background: src.active ? 'rgba(34,211,238,0.12)' : src.done ? 'rgba(52,211,153,0.06)' : 'rgba(255,255,255,0.04)',
                   border: `1.5px solid ${src.active ? 'rgba(34,211,238,0.5)' : src.done ? 'rgba(52,211,153,0.25)' : 'rgba(255,255,255,0.08)'}`,
-                  boxShadow: src.active ? '0 0 20px rgba(34,211,238,0.12)' : 'none',
+                  boxShadow: src.active ? '0 0 18px rgba(34,211,238,0.1)' : 'none',
                 }}
               >
                 {src.icon}
@@ -376,7 +389,7 @@ export default function HeroSection() {
           <motion.div
             className="absolute z-[15]"
             animate={{ left: `${robotPos.x}%`, top: `${robotPos.y}%` }}
-            transition={{ duration: 0.65, ease: [0.34, 1.56, 0.64, 1] }}
+            transition={{ duration: 0.72, ease: [0.34, 1.56, 0.64, 1] }}
             style={{
               transform: 'translate(-50%, -50%)',
               filter: carrying ? 'drop-shadow(0 0 12px rgba(52,211,153,0.4))' : 'drop-shadow(0 0 8px rgba(34,211,238,0.3))',
@@ -392,7 +405,7 @@ export default function HeroSection() {
                 initial={{ opacity: 0, y: 12, scale: 0.95 }}
                 animate={{ opacity: 1, y: 0, scale: 1 }}
                 exit={{ opacity: 0, scale: 0.9 }}
-                transition={{ duration: 0.35 }}
+                transition={{ duration: 0.4 }}
                 className="absolute bottom-[4%] right-[2%] z-20 max-w-[220px] rounded-[18px_18px_4px_18px] bg-cyan-400 px-3.5 py-2.5 text-[12.5px] font-semibold leading-snug text-slate-950 shadow-[0_8px_24px_rgba(34,211,238,0.15)] sm:bottom-[5%]"
               >
                 {activeCommand}
@@ -406,7 +419,7 @@ export default function HeroSection() {
               className="h-1.5 w-1.5 rounded-full transition-colors duration-300"
               style={{
                 background: isDelivering ? '#34d399' : isMoving ? '#22d3ee' : '#475569',
-                animation: phase.startsWith('goTo') || phase.startsWith('fetchAt') ? 'pulse 0.8s infinite' : 'none',
+                animation: phase.startsWith('goTo') || phase.startsWith('fetchAt') ? 'pulse 0.9s infinite' : 'none',
               }}
             />
             <span className="font-mono text-[10.5px] font-semibold transition-colors duration-300" style={{ color: isDelivering ? '#34d399' : isMoving ? '#22d3ee' : '#64748b' }}>
@@ -427,7 +440,7 @@ export default function HeroSection() {
                 initial={{ opacity: 0, y: 24, scale: 0.95 }}
                 animate={{ opacity: 1, y: 0, scale: 1 }}
                 exit={{ opacity: 0, scale: 0.9 }}
-                transition={{ duration: 0.45, ease: 'easeOut' }}
+                transition={{ duration: 0.5, ease: 'easeOut' }}
                 className="absolute left-1/2 top-1/2 z-[25] w-[286px] -translate-x-1/2 -translate-y-1/2 rounded-[20px] bg-[linear-gradient(180deg,rgba(255,255,255,0.97),rgba(241,247,255,0.95))] p-[18px] text-slate-900 shadow-[0_24px_60px_rgba(3,15,36,0.45),0_0_40px_rgba(34,211,238,0.06)] sm:w-[300px]"
               >
                 <div className="mb-2.5 flex items-center justify-between border-b border-slate-200 pb-2.5">
@@ -435,7 +448,7 @@ export default function HeroSection() {
                     <div className="font-mono text-[9.5px] uppercase tracking-[0.15em] text-slate-400">{activeCard.eyebrow}</div>
                     <div className="mt-0.5 text-[14px] font-extrabold">{activeCard.title}</div>
                   </div>
-                  <div className="rounded-[10px] bg-slate-900 px-2.5 py-1 text-[9.5px] font-bold text-cyan-400">자동 생성</div>
+                  <div className="rounded-[10px] bg-slate-900 px-2.5 py-1 text-[9.5px] font-bold text-cyan-400">업무 결과물</div>
                 </div>
                 <div className="space-y-0.5 text-[12px] leading-[1.95] text-slate-500">
                   {activeCard.lines.map((line) => (
