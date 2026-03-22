@@ -7,16 +7,16 @@ import StatsSection from '@/components/StatsSection';
 
 const valuePillars = [
   {
-    title: '질문에서 시작',
-    body: '텔레그램처럼 묻고, 필요한 데이터 범위를 바로 좁힙니다.',
+    title: '자동으로 찾습니다',
+    body: '질문을 받으면 필요한 소스를 먼저 탐색하고, 바로 쓸 데이터를 모읍니다.',
   },
   {
-    title: 'API를 묶어 해석',
-    body: '단일 호출이 아니라 공공데이터포털·KOSIS·ECOS·법령 데이터를 교차합니다.',
+    title: '여러 출처를 엮습니다',
+    body: '단일 호출이 아니라 공공데이터포털·KOSIS·ECOS·법령 데이터를 교차해 맥락을 만듭니다.',
   },
   {
-    title: '결과물을 남김',
-    body: '분석으로 끝내지 않고 보고서, 브리핑, 점검표처럼 업무 산출물로 반환합니다.',
+    title: '결과 문서로 돌려줍니다',
+    body: '분석으로 끝내지 않고 브리핑, 보고서, 점검표 같은 업무 산출물로 반환합니다.',
   },
 ];
 
@@ -71,11 +71,11 @@ export default function HomePage() {
                 <h2 className="mt-4 text-3xl font-bold tracking-tight text-slate-950 sm:text-4xl">
                   공픈클로는 공공업무 자동화를 위한
                   <br />
-                  플레이북 플랫폼입니다.
+                  결과물 중심 플레이북 플랫폼입니다.
                 </h2>
                 <p className="mt-4 text-sm leading-7 text-slate-600">
                   좋은 공공업무 자동화는 API를 많이 붙이는 데서 끝나지 않습니다. 질문을 받고,
-                  근거를 찾고, 여러 데이터를 엮고, 브리핑·보고서·점검표 같은 결과물까지 닿아야 실제로 쓸 수 있습니다.
+                  필요한 소스를 찾고, 여러 데이터를 엮고, 브리핑·보고서·점검표 같은 결과 문서까지 닿아야 실제로 쓸 수 있습니다.
                 </p>
               </div>
 
@@ -101,12 +101,12 @@ export default function HomePage() {
               <div className="max-w-xl">
                 <p className="text-xs font-mono uppercase tracking-[0.28em] text-cyan-700">How it works</p>
                 <h2 className="mt-4 text-3xl font-bold tracking-tight text-slate-950 sm:text-4xl">
-                  공픈클로는 예쁘게 답하는 AI보다,
+                  공픈클로는 번듯한 답변보다,
                   <br />
                   검증 가능한 자동화를 지향합니다.
                 </h2>
                 <p className="mt-4 text-sm leading-7 text-slate-600">
-                  공픈클로는 공공업무에 맞는 운영 원칙을 중심에 둡니다. 먼저 조사하고,
+                  공공업무에 맞는 운영 원칙을 중심에 둡니다. 먼저 조사하고,
                   검증하고, 기록하는 방식이 공픈클로의 기본 동작입니다.
                 </p>
               </div>
@@ -166,10 +166,11 @@ export default function HomePage() {
               <h2 className="mt-4 text-3xl font-bold tracking-tight text-slate-950 sm:text-4xl">
                 100개의 유스케이스로,
                 <br />
-                공공업무 자동화의 범위를 펼쳐봅니다.
+                공픈클로가 어디까지 가능한지 증명합니다.
               </h2>
               <p className="mt-4 text-sm leading-7 text-slate-600">
-                부처, 부서, 난이도, 자동화 방식별로 실제 적용 가능한 사례를 바로 탐색할 수 있습니다.
+                부처, 부서, 난이도, 자동화 방식별로 실제 적용 가능한 사례를 탐색하면서,
+                어떤 소스를 묶고 어떤 결과 문서로 이어지는지 바로 확인할 수 있습니다.
               </p>
             </div>
           </FadeIn>
