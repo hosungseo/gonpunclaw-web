@@ -17,6 +17,12 @@ const RADIUS = 37;
 
 type Emotion = 'idle' | 'run' | 'happy';
 type ScenarioId = 'sejong' | 'gazette' | 'staffing';
+type LiveSignal = {
+  source: string;
+  headline: string;
+  detail: string;
+  fetchedAt: string;
+};
 
 type Scenario = {
   id: ScenarioId;
@@ -176,6 +182,34 @@ function phaseLabel(phase: string, targetIdx: number, fetchedCount: number) {
   return '';
 }
 
+async function fetchSejongLiveSignal(): Promise<LiveSignal> {
+  const response = await fetch(
+    'https://api.open-meteo.com/v1/forecast?latitude=36.48&longitude=127.29&current=temperature_2m,apparent_temperature,weather_code,wind_speed_10m&timezone=Asia%2FSeoul'
+  );
+
+  if (!response.ok) {
+    throw new Error('live fetch failed');
+  }
+
+  const data = await response.json();
+  const current = data?.current;
+  if (!current) {
+    throw new Error('live payload missing');
+  }
+
+  const temp = Math.round(current.temperature_2m);
+  const apparent = Math.round(current.apparent_temperature);
+  const wind = Math.round(current.wind_speed_10m);
+  const fetchedAt = typeof current.time === 'string' ? current.time.slice(11, 16) : '방금';
+
+  return {
+    source: 'Open-Meteo 실시간 날씨',
+    headline: `세종 현재 ${temp}°C · 체감 ${apparent}°C`,
+    detail: `풍속 ${wind}km/h 기준 실시간 생활 신호를 함께 반영했습니다.`,
+    fetchedAt,
+  };
+}
+
 export default function HeroSection() {
   const [query, setQuery] = useState(SCENARIOS[0].command);
   const [submittedQuery, setSubmittedQuery] = useState(SCENARIOS[0].command);
@@ -187,6 +221,9 @@ export default function HeroSection() {
   const [carrying, setCarrying] = useState(false);
   const [emotion, setEmotion] = useState<Emotion>('idle');
   const [showPreview, setShowPreview] = useState(false);
+  const [liveSignal, setLiveSignal] = useState<LiveSignal | null>(null);
+  const [liveLoading, setLiveLoading] = useState(false);
+  const [liveError, setLiveError] = useState<string | null>(null);
   const timersRef = useRef<number[]>([]);
 
   const activeScenario = useMemo(
@@ -266,6 +303,41 @@ export default function HeroSection() {
     return clearTimers;
   }, [runFlow, clearTimers]);
 
+  useEffect(() => {
+    if (activeScenarioId !== 'sejong') {
+      setLiveSignal(null);
+      setLiveLoading(false);
+      setLiveError(null);
+      return;
+    }
+
+    let cancelled = false;
+    setLiveLoading(true);
+    setLiveError(null);
+
+    fetchSejongLiveSignal()
+      .then((signal) => {
+        if (!cancelled) {
+          setLiveSignal(signal);
+        }
+      })
+      .catch(() => {
+        if (!cancelled) {
+          setLiveSignal(null);
+          setLiveError('실시간 신호를 불러오지 못했습니다.');
+        }
+      })
+      .finally(() => {
+        if (!cancelled) {
+          setLiveLoading(false);
+        }
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [activeScenarioId]);
+
   const sourceNodes = useMemo(
     () =>
       SOURCES.map((src, i) => {
@@ -281,6 +353,11 @@ export default function HeroSection() {
   const isDelivering = phase === 'deliver';
   const isGathering = phase === 'gather';
   const canPreview = isDelivering;
+  const liveCaption = liveLoading
+    ? '실시간 신호 불러오는 중…'
+    : liveSignal
+      ? `${liveSignal.headline} · ${liveSignal.fetchedAt} 기준`
+      : liveError;
 
   const handleSubmit = (event?: FormEvent) => {
     event?.preventDefault();
@@ -425,6 +502,18 @@ export default function HeroSection() {
                 </div>
               </div>
             </motion.div>
+
+            {activeScenarioId === 'sejong' && (
+              <motion.div
+                initial={{ opacity: 0, y: 14 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.7, duration: 0.5 }}
+                className="mt-4 inline-flex max-w-max items-center gap-2 rounded-full border border-emerald-300/15 bg-emerald-300/[0.08] px-3 py-1.5 text-[11px] text-emerald-100"
+              >
+                <span className="h-1.5 w-1.5 rounded-full bg-emerald-300" />
+                <span>{liveCaption}</span>
+              </motion.div>
+            )}
 
             <motion.div
               initial={{ opacity: 0, y: 16 }}
@@ -599,9 +688,20 @@ export default function HeroSection() {
                       <div className="font-mono text-[9.5px] uppercase tracking-[0.15em] text-slate-400">{activeScenario.eyebrow}</div>
                       <div className="mt-0.5 text-[14px] font-extrabold">{activeScenario.title}</div>
                     </div>
-                    <div className="rounded-[10px] bg-slate-900 px-2.5 py-1 text-[9.5px] font-bold text-cyan-400">업무 결과물</div>
+                    <div className="flex items-center gap-1.5">
+                      {activeScenarioId === 'sejong' && liveSignal && (
+                        <div className="rounded-[10px] bg-emerald-100 px-2 py-1 text-[9px] font-bold text-emerald-700">LIVE SIGNAL</div>
+                      )}
+                      <div className="rounded-[10px] bg-slate-900 px-2.5 py-1 text-[9.5px] font-bold text-cyan-400">업무 결과물</div>
+                    </div>
                   </div>
                   <p className="mb-2.5 text-[11px] leading-[1.65] text-slate-500">{activeScenario.summary}</p>
+                  {activeScenarioId === 'sejong' && liveSignal && (
+                    <div className="mb-2.5 rounded-xl border border-emerald-200 bg-emerald-50 px-3 py-2 text-[10.5px] leading-[1.6] text-emerald-900">
+                      <strong>{liveSignal.headline}</strong>
+                      <div className="text-emerald-700">{liveSignal.detail}</div>
+                    </div>
+                  )}
                   <div className="space-y-0.5 text-[12px] leading-[1.95] text-slate-500">
                     {activeScenario.lines.map((line) => (
                       <p key={line.label}>
@@ -615,6 +715,11 @@ export default function HeroSection() {
                         {source}
                       </span>
                     ))}
+                    {activeScenarioId === 'sejong' && liveSignal && (
+                      <span className="rounded-md bg-emerald-50 px-1.5 py-0.5 text-[8.5px] font-medium text-emerald-700">
+                        {liveSignal.source}
+                      </span>
+                    )}
                   </div>
                 </motion.div>
               )}
@@ -687,8 +792,29 @@ export default function HeroSection() {
                           {source}
                         </span>
                       ))}
+                      {activeScenarioId === 'sejong' && liveSignal && (
+                        <span className="rounded-full border border-emerald-300/15 bg-emerald-300/8 px-2.5 py-1 text-[11px] text-emerald-100">
+                          {liveSignal.source}
+                        </span>
+                      )}
                     </div>
                   </div>
+                  {activeScenarioId === 'sejong' && (
+                    <div>
+                      <p className="text-[11px] font-mono uppercase tracking-[0.18em] text-slate-500">live signal</p>
+                      <div className="mt-2 rounded-2xl border border-white/8 bg-white/[0.03] px-3 py-3 text-sm leading-6 text-slate-300">
+                        {liveLoading && '세종 실시간 신호를 불러오는 중입니다.'}
+                        {!liveLoading && liveSignal && (
+                          <>
+                            <strong className="text-white">{liveSignal.headline}</strong>
+                            <div className="mt-1 text-slate-400">{liveSignal.detail}</div>
+                            <div className="mt-1 text-xs text-slate-500">갱신: {liveSignal.fetchedAt}</div>
+                          </>
+                        )}
+                        {!liveLoading && !liveSignal && liveError && <span>{liveError}</span>}
+                      </div>
+                    </div>
+                  )}
                   <div>
                     <p className="text-[11px] font-mono uppercase tracking-[0.18em] text-slate-500">output</p>
                     <ul className="mt-2 space-y-2 text-sm leading-6 text-slate-300">
