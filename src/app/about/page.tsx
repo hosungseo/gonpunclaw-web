@@ -7,10 +7,10 @@ export const metadata: Metadata = {
 };
 
 const steps = [
-  { icon: '⏰', label: 'cron', desc: '언제 실행할지' },
-  { icon: '📡', label: 'API 호출', desc: '무엇을 가져올지' },
-  { icon: '🤖', label: 'AI 분석', desc: '어떻게 처리할지' },
-  { icon: '📄', label: '리포트', desc: '어떤 결과를 낼지' },
+  { icon: '🔓', label: '공개데이터', desc: '어떤 공개 API를 활용할지' },
+  { icon: '🧭', label: '자동 탐색', desc: '무엇을 먼저 찾아올지' },
+  { icon: '🧩', label: '복합분석', desc: '어떻게 엮고 해석할지' },
+  { icon: '📄', label: '결과 문서', desc: '어떤 산출물로 돌려줄지' },
 ];
 
 const principles = [
@@ -54,8 +54,8 @@ export default function AboutPage() {
               공공업무용 AI 자동화 플레이북입니다.
             </h1>
             <p className="mx-auto mt-6 max-w-2xl text-sm leading-7 text-slate-300 sm:text-base">
-              오픈API와 AI를 붙이는 데서 멈추지 않고, 실제 실무자가 바로 사용할 수 있는 브리핑·점검표·보고서로
-              결과를 바꾸는 방식을 정리한 플레이북 플랫폼입니다.
+              각 기관이 이미 공개한 데이터를 활용하고, 필요한 정보를 자동으로 찾아오며, 여러 출처를 복합분석해
+              실무자가 바로 쓸 수 있는 브리핑·점검표·보고서로 바꾸는 방식을 정리한 플레이북 플랫폼입니다.
             </p>
           </FadeIn>
         </div>
@@ -64,9 +64,13 @@ export default function AboutPage() {
       <section className="border-b border-slate-200 bg-white py-16">
         <div className="mx-auto max-w-5xl px-6">
           <FadeIn>
-            <h2 className="mb-10 text-center text-sm font-semibold uppercase tracking-[0.24em] text-slate-400">
-              공공 API 생태계
-            </h2>
+            <div className="mx-auto mb-10 max-w-3xl text-center">
+              <h2 className="text-sm font-semibold uppercase tracking-[0.24em] text-slate-400">공공 API 생태계</h2>
+              <p className="mt-4 text-sm leading-7 text-slate-600">
+                공픈클로는 각 기관이 이미 국민에게 공개한 API와 데이터를 우선 활용합니다. 그래서 공공기관 실무자가 시도할 때
+                보안 부담과 도입 장벽이 상대적으로 낮습니다.
+              </p>
+            </div>
             <div className="grid grid-cols-3 gap-8 text-center">
               {stats.map(({ value, label, sub }) => (
                 <div key={label}>
@@ -84,7 +88,7 @@ export default function AboutPage() {
         <div className="mx-auto max-w-5xl px-6">
           <FadeIn>
             <h2 className="text-center text-2xl font-bold text-slate-950 sm:text-3xl">작동 원리</h2>
-            <p className="mt-3 text-center text-sm leading-7 text-slate-500">네 단계 자동화 파이프라인으로 작동합니다.</p>
+            <p className="mt-3 text-center text-sm leading-7 text-slate-500">공개데이터 활용 → 자동 탐색 → 복합분석 → 결과 문서의 흐름으로 작동합니다.</p>
           </FadeIn>
           <div className="mt-12 grid grid-cols-2 gap-4 sm:grid-cols-4">
             {steps.map(({ icon, label, desc }, i) => (
@@ -105,15 +109,15 @@ export default function AboutPage() {
         <div className="mx-auto grid max-w-6xl gap-12 px-6 lg:grid-cols-[0.85fr_1.15fr] lg:items-start">
           <FadeIn>
             <div className="max-w-xl">
-              <p className="text-xs font-mono uppercase tracking-[0.28em] text-cyan-700">Operating philosophy</p>
+              <p className="text-xs font-mono uppercase tracking-[0.28em] text-cyan-700">Core characteristics</p>
               <h2 className="mt-4 text-3xl font-bold tracking-tight text-slate-950 sm:text-4xl">
-                공픈클로는 답변보다
+                공픈클로는 세 가지 특징 위에
                 <br />
-                운영 원칙을 먼저 세웁니다.
+                공공업무 자동화를 세웁니다.
               </h2>
               <p className="mt-4 text-sm leading-7 text-slate-600">
-                먼저 조사하고, 검증하고, 기록하는 흐름을 중심에 둡니다. 공공업무 자동화는 멋진 문장보다
-                근거와 재현성이 더 중요하다고 보기 때문입니다.
+                공개데이터 활용, 자동 탐색, 복합분석이 공픈클로의 기본 축입니다. 그래서 보안 부담은 낮추고,
+                실무자는 더 빠르게 판단 가능한 결과 문서까지 도달할 수 있습니다.
               </p>
             </div>
           </FadeIn>
