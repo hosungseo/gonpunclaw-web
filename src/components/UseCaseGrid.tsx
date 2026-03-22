@@ -133,19 +133,23 @@ export default function UseCaseGrid({ usecases, departments }: Props) {
                 </div>
 
                 <div className="mb-2 flex flex-wrap gap-1.5">
-                  <span className="rounded-full bg-cyan-50 px-2 py-1 text-[10px] font-semibold text-cyan-700">AUTO FETCH</span>
+                  <span className="rounded-full bg-cyan-50 px-2 py-1 text-[10px] font-semibold text-cyan-700">자동 탐색</span>
                   <span className="rounded-full bg-slate-100 px-2 py-1 text-[10px] font-semibold text-slate-600">{outputLabel}</span>
                 </div>
 
-                <h3 className="mb-3 text-sm font-semibold leading-snug text-gray-900 transition-colors group-hover:text-blue-700 line-clamp-2">
+                <h3 className="mb-2 text-[15px] font-semibold leading-snug text-gray-900 transition-colors group-hover:text-blue-700 line-clamp-2">
                   {uc.업무}
                 </h3>
 
-                <p className="mb-4 text-[12px] leading-6 text-slate-500 line-clamp-3">
+                <p className="mb-4 text-[11px] font-semibold tracking-[0.04em] text-slate-400">
+                  {outputLabel}
+                </p>
+
+                <p className="mb-4 text-[12px] leading-6 text-slate-500 line-clamp-2">
                   {previewLine}
                 </p>
 
-                <div className="mb-4 flex flex-wrap gap-1.5">
+                <div className="mb-3 flex flex-wrap gap-1.5">
                   {sourceLabels.map((label) => (
                     <span key={label} className="rounded-full border border-slate-200 bg-slate-50 px-2 py-1 text-[10px] font-medium text-slate-600">
                       {label}
@@ -158,6 +162,7 @@ export default function UseCaseGrid({ usecases, departments }: Props) {
                   <div className="text-[12px] leading-6 text-slate-600">
                     {sourceCount > 1 ? `${sourceCount}개 소스를 결합해 ${outputLabel}로 정리` : `${outputLabel} 중심 자동화 시나리오`}
                   </div>
+                  <div className="mt-2 text-[10px] font-medium text-slate-400">자동 탐색된 출처 기반</div>
                 </div>
 
                 <div className="mt-4 flex items-center gap-2 text-xs text-gray-500">

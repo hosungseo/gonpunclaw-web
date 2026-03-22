@@ -611,7 +611,7 @@ export default function HeroSection() {
                   left: `${src.pos.x}%`,
                   top: `${src.pos.y}%`,
                   transform: 'translate(-50%,-50%)',
-                  opacity: src.active ? 1 : src.done ? 0.5 : 0.65,
+                  opacity: isDelivering ? (src.done ? 0.22 : 0.12) : src.active ? 1 : src.done ? 0.45 : 0.55,
                 }}
               >
                 <div
@@ -675,7 +675,7 @@ export default function HeroSection() {
             </div>
 
             <AnimatePresence mode="wait">
-              {phase !== 'idle' && (
+              {phase !== 'idle' && !isDelivering && (
                 <motion.div
                   key={submittedQuery}
                   initial={{ opacity: 0, y: 12, scale: 0.95 }}
@@ -708,9 +708,9 @@ export default function HeroSection() {
                     </div>
                     <div className="flex items-center gap-1.5">
                       {activeScenarioId === 'sejong' && liveSignal && (
-                        <div className="rounded-[10px] bg-emerald-100 px-2 py-1 text-[9px] font-bold text-emerald-700">LIVE SIGNAL</div>
+                        <div className="rounded-[10px] bg-emerald-100 px-2 py-1 text-[9px] font-bold text-emerald-700">실시간 신호</div>
                       )}
-                      <div className="rounded-[10px] bg-slate-900 px-2.5 py-1 text-[9.5px] font-bold text-cyan-400">업무 결과물</div>
+                      <div className="rounded-[10px] bg-slate-900 px-2.5 py-1 text-[9.5px] font-bold text-cyan-400">결과 문서</div>
                     </div>
                   </div>
                   <p className="mb-2.5 text-[11px] leading-[1.65] text-slate-500">{activeScenario.summary}</p>
@@ -723,9 +723,8 @@ export default function HeroSection() {
                         : '정원 추세 + 정책 수요 + 법령 맥락 결합'}
                   </div>
                   <div className="mb-2.5 flex flex-wrap gap-1.5 text-[9px] font-semibold text-slate-500">
-                    <span className="rounded-full bg-slate-100 px-2 py-1">AUTO FETCH</span>
-                    <span className="rounded-full bg-slate-100 px-2 py-1">CROSS-SOURCE</span>
-                    <span className="rounded-full bg-slate-100 px-2 py-1">READY TO BRIEF</span>
+                    <span className="rounded-full bg-slate-100 px-2 py-1">자동 탐색</span>
+                    <span className="rounded-full bg-slate-100 px-2 py-1">교차 분석</span>
                   </div>
                   {activeScenarioId === 'sejong' && liveSignal && (
                     <div className="mb-2.5 rounded-xl border border-emerald-200 bg-emerald-50 px-3 py-2 text-[10.5px] leading-[1.6] text-emerald-900">
@@ -787,7 +786,7 @@ export default function HeroSection() {
             >
               <div className="flex items-start justify-between gap-6 border-b border-white/10 px-6 py-5">
                 <div>
-                  <p className="text-[11px] font-mono uppercase tracking-[0.22em] text-cyan-300/70">preview</p>
+                  <p className="text-[11px] font-mono uppercase tracking-[0.22em] text-cyan-300/70">결과 미리보기</p>
                   <h3 className="mt-2 text-2xl font-bold text-white">{activeScenario.previewTitle}</h3>
                   <p className="mt-2 max-w-xl text-sm leading-7 text-slate-400">{activeScenario.previewIntro}</p>
                 </div>
@@ -812,11 +811,11 @@ export default function HeroSection() {
 
                 <div className="space-y-4 rounded-3xl border border-white/8 bg-white/[0.03] p-5">
                   <div>
-                    <p className="text-[11px] font-mono uppercase tracking-[0.18em] text-slate-500">request</p>
+                    <p className="text-[11px] font-mono uppercase tracking-[0.18em] text-slate-500">요청</p>
                     <p className="mt-2 text-sm font-medium text-white">{submittedQuery}</p>
                   </div>
                   <div>
-                    <p className="text-[11px] font-mono uppercase tracking-[0.18em] text-slate-500">source mix</p>
+                    <p className="text-[11px] font-mono uppercase tracking-[0.18em] text-slate-500">활용 근거</p>
                     <div className="mt-2 flex flex-wrap gap-2">
                       {activeScenario.sources.map((source) => (
                         <span key={source} className="rounded-full border border-cyan-300/15 bg-cyan-300/8 px-2.5 py-1 text-[11px] text-cyan-100">
@@ -832,7 +831,7 @@ export default function HeroSection() {
                   </div>
                   {activeScenarioId === 'sejong' && (
                     <div>
-                      <p className="text-[11px] font-mono uppercase tracking-[0.18em] text-slate-500">live signal</p>
+                      <p className="text-[11px] font-mono uppercase tracking-[0.18em] text-slate-500">실시간 신호</p>
                       <div className="mt-2 rounded-2xl border border-white/8 bg-white/[0.03] px-3 py-3 text-sm leading-6 text-slate-300">
                         {liveLoading && '세종 실시간 신호를 불러오는 중입니다.'}
                         {!liveLoading && liveSignal && (
@@ -847,7 +846,7 @@ export default function HeroSection() {
                     </div>
                   )}
                   <div>
-                    <p className="text-[11px] font-mono uppercase tracking-[0.18em] text-slate-500">output</p>
+                    <p className="text-[11px] font-mono uppercase tracking-[0.18em] text-slate-500">산출물 구성</p>
                     <ul className="mt-2 space-y-2 text-sm leading-6 text-slate-300">
                       <li>• 핵심 요약</li>
                       <li>• 실무 판단</li>
