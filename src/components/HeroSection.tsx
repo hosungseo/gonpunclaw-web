@@ -429,9 +429,9 @@ export default function HeroSection() {
               initial={{ opacity: 0, y: 16 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.52, duration: 0.6 }}
-              className="mt-3 max-w-[470px] text-[13px] leading-[1.8] text-slate-500"
+              className="mt-3 max-w-[450px] text-[13px] leading-[1.75] text-slate-500"
             >
-              통계·법령·고시·행정 데이터를 알아서 찾고, 교차 분석해 브리핑·보고서·점검표 같은 업무 산출물로 정리합니다.
+              통계·법령·고시·행정 데이터를 알아서 찾고, 교차 분석해 브리핑·보고서·점검표로 정리합니다.
             </motion.p>
 
             <motion.form
@@ -582,6 +582,21 @@ export default function HeroSection() {
                   <motion.div key={fi} initial={{ scale: 0 }} animate={{ scale: 1 }} className="h-2 w-2 rounded-full bg-cyan-400 opacity-70" />
                 ))}
               </div>
+              {(isGathering || isDelivering) && (
+                <motion.div
+                  initial={{ opacity: 0, scale: 0.8 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  className="absolute inset-[-10px] rounded-full border border-cyan-300/25"
+                />
+              )}
+              {isGathering && (
+                <motion.div
+                  initial={{ opacity: 0, scale: 0.7 }}
+                  animate={{ opacity: [0.15, 0.35, 0.15], scale: [0.8, 1.12, 1.18] }}
+                  transition={{ duration: 1.2, repeat: Infinity, ease: 'easeInOut' }}
+                  className="absolute inset-[-18px] rounded-full border border-cyan-300/18"
+                />
+              )}
             </div>
             <div className="absolute left-1/2 top-[calc(41%+38px)] z-[2] -translate-x-1/2 text-center sm:top-[calc(48%+38px)]">
               <div className="text-[10px] font-bold text-slate-500">조합 엔진</div>
@@ -689,6 +704,7 @@ export default function HeroSection() {
                     <div>
                       <div className="font-mono text-[9.5px] uppercase tracking-[0.15em] text-slate-400">{activeScenario.eyebrow}</div>
                       <div className="mt-0.5 text-[14px] font-extrabold">{activeScenario.title}</div>
+                      <div className="mt-1 text-[9.5px] font-medium text-slate-400">자동 탐색된 복수 출처 기반 결과</div>
                     </div>
                     <div className="flex items-center gap-1.5">
                       {activeScenarioId === 'sejong' && liveSignal && (
@@ -705,6 +721,11 @@ export default function HeroSection() {
                       : activeScenarioId === 'gazette'
                         ? '관보 + 법령정보 교차 확인'
                         : '정원 추세 + 정책 수요 + 법령 맥락 결합'}
+                  </div>
+                  <div className="mb-2.5 flex flex-wrap gap-1.5 text-[9px] font-semibold text-slate-500">
+                    <span className="rounded-full bg-slate-100 px-2 py-1">AUTO FETCH</span>
+                    <span className="rounded-full bg-slate-100 px-2 py-1">CROSS-SOURCE</span>
+                    <span className="rounded-full bg-slate-100 px-2 py-1">READY TO BRIEF</span>
                   </div>
                   {activeScenarioId === 'sejong' && liveSignal && (
                     <div className="mb-2.5 rounded-xl border border-emerald-200 bg-emerald-50 px-3 py-2 text-[10.5px] leading-[1.6] text-emerald-900">
