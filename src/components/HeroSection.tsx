@@ -12,6 +12,38 @@ const SOURCES = [
   { id: 'assembly', name: '국회·관보', sub: '의안·고시', icon: '🏛️', angle: 198 },
 ] as const;
 
+const RESULT_CARDS = [
+  {
+    eyebrow: 'auto brief',
+    title: '세종시 주간 현황',
+    lines: [
+      { label: '인구', text: '서울→세종 전입 전주 대비 ↑' },
+      { label: '부동산', text: '평균 매매가 상승, 거래량 보합' },
+      { label: '대기질', text: 'PM10 보통 — 외부활동 양호' },
+    ],
+  },
+  {
+    eyebrow: 'policy memo',
+    title: '관보 핵심 브리핑',
+    lines: [
+      { label: '고시', text: '중요 고시 2건 추출, 부처별 영향 표시' },
+      { label: '법령', text: '후속 확인 필요 조문 1건 표시' },
+      { label: '메모', text: '실무 검토 포인트까지 자동 정리' },
+    ],
+  },
+  {
+    eyebrow: 'work report',
+    title: '교원정원 점검표',
+    lines: [
+      { label: '정원', text: '최근 변동 추세와 부처별 편차 정리' },
+      { label: '수요', text: '정책 수요 대비 인력 이슈 포착' },
+      { label: '결과', text: '점검표와 브리핑 문안 동시 생성' },
+    ],
+  },
+] as const;
+
+const COMMANDS = ['세종시 현황 브리핑 만들어줘', '이번 주 관보 핵심만 정리해줘', '교원정원 점검표 만들어줘'] as const;
+
 const CENTER = { x: 50, y: 48 };
 const RADIUS = 37;
 
@@ -125,9 +157,9 @@ export default function HeroSection() {
             setCarrying(false);
             setEmotion('idle');
             goToSource(idx + 1);
-          }, 700);
-        }, 650);
-      }, 700);
+          }, 650);
+        }, 550);
+      }, 650);
     },
     [wait]
   );
@@ -143,7 +175,7 @@ export default function HeroSection() {
 
     wait(() => {
       setPhase('command');
-      wait(() => goToSource(0), 1400);
+      wait(() => goToSource(0), 1300);
     }, 800);
 
     return clearTimers;
@@ -153,6 +185,8 @@ export default function HeroSection() {
   const isDelivering = phase === 'deliver';
   const isGathering = phase === 'gather';
   const showCmd = phase === 'command' || phase === 'goTo0';
+  const activeCard = RESULT_CARDS[cycle % RESULT_CARDS.length];
+  const activeCommand = COMMANDS[cycle % COMMANDS.length];
 
   const sourceNodes = useMemo(
     () =>
@@ -177,8 +211,8 @@ export default function HeroSection() {
       />
       <div className="absolute inset-0 bg-[linear-gradient(to_bottom,rgba(4,17,31,0.05),rgba(4,17,31,0.5)_65%,rgba(4,17,31,0.8))]" />
 
-      <div className="relative z-10 mx-auto grid min-h-[calc(100svh-56px)] max-w-7xl grid-cols-1 items-center gap-10 px-6 py-16 lg:grid-cols-[minmax(0,0.95fr)_minmax(380px,1.05fr)] lg:gap-14 lg:px-10">
-        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.6 }} className="max-w-[520px]">
+      <div className="relative z-10 mx-auto grid min-h-[calc(100svh-56px)] max-w-7xl grid-cols-1 items-center gap-10 px-6 py-14 lg:grid-cols-[minmax(0,0.95fr)_minmax(380px,1.05fr)] lg:gap-14 lg:px-10 lg:py-16">
+        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.6 }} className="max-w-[500px]">
           <motion.p
             initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
@@ -201,7 +235,7 @@ export default function HeroSection() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.35, duration: 0.6 }}
-            className="mt-5 text-[clamp(1.15rem,2.2vw,1.6rem)] font-semibold leading-snug"
+            className="mt-5 text-[clamp(1.1rem,2vw,1.5rem)] font-semibold leading-snug"
           >
             시키면 알아서 캐옵니다.
           </motion.p>
@@ -210,9 +244,9 @@ export default function HeroSection() {
             initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.45, duration: 0.6 }}
-            className="mt-2 max-w-[400px] text-[15px] leading-[1.8] text-slate-400"
+            className="mt-2 max-w-[390px] text-[15px] leading-[1.8] text-slate-400"
           >
-            공공데이터포털·KOSIS·ECOS·법령을 뒤져서
+            공공데이터를 찾아서, 엮어서,
             <br />
             브리핑·보고서·점검표까지 바로 만드는 AI.
           </motion.p>
@@ -234,7 +268,7 @@ export default function HeroSection() {
               <span className="mt-0.5 shrink-0 text-base">🤖</span>
               <div>
                 <span className="font-bold text-cyan-400">공픈클로</span>{' '}
-                <span className="font-semibold text-white">&quot;세종시 현황 정리해줘&quot;</span>
+                <span className="font-semibold text-white">&quot;{activeCommand}&quot;</span>
                 <span className="text-slate-500"> — 끝.</span>
               </div>
             </div>
@@ -265,9 +299,9 @@ export default function HeroSection() {
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ delay: 0.3, duration: 0.7 }}
-          className="relative mx-auto aspect-[1/0.9] w-full max-w-[560px]"
+          className="relative mx-auto aspect-[1/0.88] w-full max-w-[560px] sm:aspect-[1/0.9]"
         >
-          <svg className="absolute inset-0 z-[1] h-full w-full" viewBox="0 0 100 96" preserveAspectRatio="xMidYMid meet">
+          <svg className="absolute inset-0 z-[1] hidden h-full w-full sm:block" viewBox="0 0 100 96" preserveAspectRatio="xMidYMid meet">
             {sourceNodes.map((src) => (
               <line
                 key={src.id}
@@ -286,13 +320,8 @@ export default function HeroSection() {
           </svg>
 
           <div
-            className="absolute z-[2] flex items-center justify-center rounded-full border transition-all duration-500"
+            className="absolute left-1/2 top-[41%] z-[2] flex h-[68px] w-[68px] -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full border transition-all duration-500 sm:left-[50%] sm:top-[48%]"
             style={{
-              left: `${CENTER.x}%`,
-              top: `${CENTER.y}%`,
-              transform: 'translate(-50%,-50%)',
-              width: 68,
-              height: 68,
               borderColor: isGathering || isDelivering ? 'rgba(34,211,238,0.35)' : 'rgba(255,255,255,0.06)',
               background: isGathering ? 'rgba(34,211,238,0.05)' : 'transparent',
             }}
@@ -303,17 +332,14 @@ export default function HeroSection() {
               ))}
             </div>
           </div>
-          <div
-            className="absolute z-[2] whitespace-nowrap text-center text-[10px] font-bold text-slate-600"
-            style={{ left: `${CENTER.x}%`, top: `${CENTER.y}%`, transform: 'translate(-50%, calc(-50% + 42px))' }}
-          >
+          <div className="absolute left-1/2 top-[calc(41%+42px)] z-[2] -translate-x-1/2 text-center text-[10px] font-bold text-slate-600 sm:top-[calc(48%+42px)]">
             홈베이스
           </div>
 
-          {sourceNodes.map((src) => (
+          {sourceNodes.map((src, idx) => (
             <div
               key={src.id}
-              className="absolute z-[5] flex flex-col items-center gap-1.5 transition-all duration-300"
+              className={`absolute z-[5] flex flex-col items-center gap-1.5 transition-all duration-300 ${idx > 3 ? 'hidden sm:flex' : ''}`}
               style={{
                 left: `${src.pos.x}%`,
                 top: `${src.pos.y}%`,
@@ -322,10 +348,8 @@ export default function HeroSection() {
               }}
             >
               <div
-                className="relative flex items-center justify-center rounded-[14px] text-[22px] transition-all duration-300"
+                className="relative flex h-[50px] w-[50px] items-center justify-center rounded-[14px] text-[22px] transition-all duration-300"
                 style={{
-                  width: 50,
-                  height: 50,
                   background: src.active ? 'rgba(34,211,238,0.12)' : src.done ? 'rgba(52,211,153,0.06)' : 'rgba(255,255,255,0.04)',
                   border: `1.5px solid ${src.active ? 'rgba(34,211,238,0.5)' : src.done ? 'rgba(52,211,153,0.25)' : 'rgba(255,255,255,0.08)'}`,
                   boxShadow: src.active ? '0 0 20px rgba(34,211,238,0.12)' : 'none',
@@ -369,9 +393,9 @@ export default function HeroSection() {
                 animate={{ opacity: 1, y: 0, scale: 1 }}
                 exit={{ opacity: 0, scale: 0.9 }}
                 transition={{ duration: 0.35 }}
-                className="absolute bottom-[5%] right-[2%] z-20 max-w-[220px] rounded-[18px_18px_4px_18px] bg-cyan-400 px-3.5 py-2.5 text-[12.5px] font-semibold leading-snug text-slate-950 shadow-[0_8px_24px_rgba(34,211,238,0.15)]"
+                className="absolute bottom-[4%] right-[2%] z-20 max-w-[220px] rounded-[18px_18px_4px_18px] bg-cyan-400 px-3.5 py-2.5 text-[12.5px] font-semibold leading-snug text-slate-950 shadow-[0_8px_24px_rgba(34,211,238,0.15)] sm:bottom-[5%]"
               >
-                세종시 현황 브리핑 만들어줘
+                {activeCommand}
                 <div className="mt-1 text-[9.5px] font-normal text-slate-950/40">👤 사무관</div>
               </motion.div>
             )}
@@ -392,40 +416,36 @@ export default function HeroSection() {
 
           <div className="absolute bottom-[2%] left-1/2 z-20 flex -translate-x-1/2 gap-1">
             {SOURCES.map((_, i) => (
-              <div key={i} className="h-1 w-6 rounded-full transition-colors duration-300" style={{ background: fetched.includes(i) ? '#22d3ee' : 'rgba(255,255,255,0.08)' }} />
+              <div key={i} className="h-1 w-5 rounded-full transition-colors duration-300 sm:w-6" style={{ background: fetched.includes(i) ? '#22d3ee' : 'rgba(255,255,255,0.08)' }} />
             ))}
           </div>
 
-          <AnimatePresence>
+          <AnimatePresence mode="wait">
             {isDelivering && (
               <motion.div
                 key={`result-${cycle}`}
                 initial={{ opacity: 0, y: 24, scale: 0.95 }}
                 animate={{ opacity: 1, y: 0, scale: 1 }}
                 exit={{ opacity: 0, scale: 0.9 }}
-                transition={{ duration: 0.5, ease: 'easeOut' }}
-                className="absolute left-1/2 top-1/2 z-[25] w-[300px] -translate-x-1/2 -translate-y-1/2 rounded-[20px] bg-[linear-gradient(180deg,rgba(255,255,255,0.97),rgba(241,247,255,0.95))] p-[18px] text-slate-900 shadow-[0_24px_60px_rgba(3,15,36,0.45),0_0_40px_rgba(34,211,238,0.06)]"
+                transition={{ duration: 0.45, ease: 'easeOut' }}
+                className="absolute left-1/2 top-1/2 z-[25] w-[286px] -translate-x-1/2 -translate-y-1/2 rounded-[20px] bg-[linear-gradient(180deg,rgba(255,255,255,0.97),rgba(241,247,255,0.95))] p-[18px] text-slate-900 shadow-[0_24px_60px_rgba(3,15,36,0.45),0_0_40px_rgba(34,211,238,0.06)] sm:w-[300px]"
               >
                 <div className="mb-2.5 flex items-center justify-between border-b border-slate-200 pb-2.5">
                   <div>
-                    <div className="font-mono text-[9.5px] uppercase tracking-[0.15em] text-slate-400">auto brief</div>
-                    <div className="mt-0.5 text-[14px] font-extrabold">세종시 주간 현황</div>
+                    <div className="font-mono text-[9.5px] uppercase tracking-[0.15em] text-slate-400">{activeCard.eyebrow}</div>
+                    <div className="mt-0.5 text-[14px] font-extrabold">{activeCard.title}</div>
                   </div>
                   <div className="rounded-[10px] bg-slate-900 px-2.5 py-1 text-[9.5px] font-bold text-cyan-400">자동 생성</div>
                 </div>
-                <div className="space-y-0.5 text-[12px] leading-[2] text-slate-500">
-                  <p>
-                    <strong className="text-slate-900">인구</strong> 서울→세종 전입 전주 대비 ↑
-                  </p>
-                  <p>
-                    <strong className="text-slate-900">부동산</strong> 평균 매매가 상승, 거래량 보합
-                  </p>
-                  <p>
-                    <strong className="text-slate-900">대기질</strong> PM10 보통 — 외부활동 양호
-                  </p>
+                <div className="space-y-0.5 text-[12px] leading-[1.95] text-slate-500">
+                  {activeCard.lines.map((line) => (
+                    <p key={line.label}>
+                      <strong className="text-slate-900">{line.label}</strong> {line.text}
+                    </p>
+                  ))}
                 </div>
                 <div className="mt-2.5 flex gap-1 border-t border-slate-200 pt-2">
-                  {SOURCES.map((s) => (
+                  {SOURCES.slice(0, 4).map((s) => (
                     <span key={s.id} className="rounded-md bg-slate-100 px-1.5 py-0.5 text-[8.5px] font-medium text-slate-500">
                       {s.name.length > 4 ? s.name.slice(0, 4) : s.name}
                     </span>
