@@ -401,7 +401,7 @@ export default function HeroSection() {
             )}
           </AnimatePresence>
 
-          <div className="absolute left-1/2 top-[3%] z-20 flex -translate-x-1/2 items-center gap-2 rounded-full border border-white/[0.08] bg-slate-950/90 px-3.5 py-1.5">
+          <div className="absolute left-1/2 top-[calc(41%-68px)] z-20 flex -translate-x-1/2 items-center gap-2 rounded-full border border-white/[0.08] bg-slate-950/90 px-3.5 py-1.5 sm:top-[calc(48%-78px)]">
             <div
               className="h-1.5 w-1.5 rounded-full transition-colors duration-300"
               style={{
