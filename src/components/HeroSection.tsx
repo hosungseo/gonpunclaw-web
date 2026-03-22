@@ -439,7 +439,7 @@ export default function HeroSection() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.6, duration: 0.6 }}
               onSubmit={handleSubmit}
-              className="mt-8"
+              className="mt-9"
             >
               <label htmlFor="hero-command" className="mb-2 block text-[11px] font-mono uppercase tracking-[0.25em] text-slate-500">
                 Try a request
@@ -484,36 +484,10 @@ export default function HeroSection() {
               initial={{ opacity: 0, y: 16 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.68, duration: 0.6 }}
-              className="mt-7 overflow-hidden rounded-xl border border-white/[0.06] sm:block"
+              className="mt-6 text-[12px] leading-6 text-slate-500"
             >
-              <div className="flex items-start gap-2.5 bg-white/[0.02] px-4 py-3.5 text-[13px] leading-[1.7] text-slate-500">
-                <span className="mt-0.5 shrink-0 text-base">😩</span>
-                <div>
-                  <span className="font-bold text-slate-400">기존</span>{' '}
-                  포털 가입 → 키 발급 → API 문서 해독 → 코드 작성 → 에러 디버깅 → 데이터 파싱 → 분석 → 보고서
-                </div>
-              </div>
-              <div className="flex items-start gap-2.5 border-t border-white/[0.06] bg-cyan-400/[0.04] px-4 py-3.5 text-[13px] leading-[1.7] text-slate-200">
-                <span className="mt-0.5 shrink-0 text-base">🤖</span>
-                <div>
-                  <span className="font-bold text-cyan-400">공픈클로</span>{' '}
-                  <span className="font-semibold text-white">&quot;{submittedQuery}&quot;</span>
-                  <span className="text-slate-500"> → 자동으로 찾고, 엮고, 정리</span>
-                </div>
-              </div>
+              각 기관이 이미 공개한 데이터를 활용해, 보안 부담은 낮추고 실무 결과 문서까지 바로 연결합니다.
             </motion.div>
-
-            {activeScenarioId === 'sejong' && (
-              <motion.div
-                initial={{ opacity: 0, y: 14 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.7, duration: 0.5 }}
-                className="mt-4 inline-flex max-w-max items-center gap-2 rounded-full border border-emerald-300/15 bg-emerald-300/[0.08] px-3 py-1.5 text-[11px] text-emerald-100"
-              >
-                <span className="h-1.5 w-1.5 rounded-full bg-emerald-300" />
-                <span>{liveCaption}</span>
-              </motion.div>
-            )}
 
             <motion.div
               initial={{ opacity: 0, y: 16 }}
@@ -548,7 +522,7 @@ export default function HeroSection() {
             transition={{ delay: 0.3, duration: 0.7 }}
             className="relative mx-auto aspect-[1/0.9] w-full max-w-[560px]"
           >
-            <div className="absolute left-1/2 top-[11%] z-20 hidden -translate-x-1/2 rounded-full border border-cyan-300/15 bg-cyan-300/8 px-3 py-1 text-[10px] font-medium text-cyan-100/85 sm:block">
+            <div className="absolute left-1/2 top-[11%] z-20 hidden -translate-x-1/2 rounded-full border border-cyan-300/15 bg-cyan-300/8 px-3 py-1 text-[10px] font-medium text-cyan-100/85 lg:block">
               자동 탐색 → 수집 → 교차분석 → 결과물
             </div>
 
@@ -652,7 +626,7 @@ export default function HeroSection() {
               <Robot size={46} carrying={carrying} emotion={emotion} />
             </motion.div>
 
-            <div className="absolute left-1/2 top-[calc(41%-68px)] z-20 flex -translate-x-1/2 items-center gap-2 rounded-full border border-white/[0.08] bg-slate-950/90 px-3.5 py-1.5 sm:top-[calc(48%-78px)]">
+            <div className="absolute left-1/2 top-[calc(41%-68px)] z-20 hidden -translate-x-1/2 items-center gap-2 rounded-full border border-white/[0.08] bg-slate-950/90 px-3.5 py-1.5 sm:flex sm:top-[calc(48%-78px)]">
               <div
                 className="h-1.5 w-1.5 rounded-full transition-colors duration-300"
                 style={{
