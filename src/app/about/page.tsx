@@ -35,10 +35,10 @@ const stats = [
 ];
 
 const stack = [
-  { name: 'OpenClaw', desc: 'AI 에이전트 실행 환경. cron·API·메모리 관리.' },
-  { name: 'Claude', desc: 'Anthropic AI. 데이터 분석·리포트 생성·판단.' },
-  { name: '공공데이터포털', desc: '17,163개 공공 오픈API 허브. data.go.kr.' },
-  { name: 'Next.js', desc: '이 웹 서비스. 유스케이스 탐색 UI.' },
+  { name: 'OpenClaw', desc: '공개데이터 탐색, API 실행, 메모리·자동화 흐름을 붙이는 에이전트 실행 환경.' },
+  { name: 'Claude', desc: '여러 출처를 복합분석하고 브리핑·보고서·점검표 형태로 정리하는 AI.' },
+  { name: '공공데이터포털', desc: '기관이 이미 공개한 API를 연결하는 대표 허브. 공개데이터 활용의 출발점.' },
+  { name: 'Next.js', desc: '공픈클로의 유스케이스·작동 방식·제품 메시지를 보여주는 웹 인터페이스.' },
 ];
 
 export default function AboutPage() {
@@ -148,8 +148,8 @@ export default function AboutPage() {
                 관보, 정책 점검처럼 서로 다른 장면을 100개의 유스케이스로 펼쳐 보이며 자동화의 범위를 보여주려 합니다.
               </p>
               <p className="mt-4 text-sm leading-7 text-slate-600">
-                숫자를 늘리기 위한 100선이 아니라, 공공데이터와 AI가 어디까지 실무에 들어갈 수 있는지를 체계적으로
-                보여주기 위한 100선입니다.
+                숫자를 늘리기 위한 100선이 아니라, 공개데이터를 어떻게 활용하고 무엇을 자동으로 찾아오며,
+                여러 출처를 어떻게 복합분석해 실무 결과 문서로 바꿀 수 있는지를 체계적으로 보여주기 위한 100선입니다.
               </p>
             </div>
           </FadeIn>
@@ -183,7 +183,7 @@ export default function AboutPage() {
         <div className="mx-auto max-w-3xl px-6">
           <FadeIn>
             <h2 className="mb-3 text-center text-2xl font-bold">기술 스택</h2>
-            <p className="mb-12 text-center text-sm text-white/40">공픈클로를 만드는 도구들</p>
+            <p className="mb-12 text-center text-sm text-white/40">공개데이터 활용 · 자동 탐색 · 복합분석을 가능하게 하는 도구들</p>
             <div className="space-y-3">
               {stack.map(({ name, desc }) => (
                 <div key={name} className="flex items-start gap-4 border border-white/10 bg-white/5 px-6 py-4">
