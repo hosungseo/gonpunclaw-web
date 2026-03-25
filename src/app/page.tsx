@@ -192,6 +192,11 @@ export default function HomePage() {
                       </div>
                       <h3 className="text-xl font-bold text-slate-950 leading-snug">{uc.업무}</h3>
                       <p className="mt-2 text-sm text-slate-600 max-w-2xl">{uc.한줄요약}</p>
+                      {uc.배경 && (
+                        <p className="mt-3 text-sm text-slate-500 max-w-2xl leading-relaxed border-l-2 border-emerald-300 pl-3">
+                          {uc.배경}
+                        </p>
+                      )}
                     </div>
                     <a
                       href={uc.결과물.URL}
