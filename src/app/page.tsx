@@ -4,6 +4,9 @@ import UseCaseGrid from '@/components/UseCaseGrid';
 import FadeIn from '@/components/FadeIn';
 import HeroSection from '@/components/HeroSection';
 import StatsSection from '@/components/StatsSection';
+import realUsecasesData from '@/data/real-usecases.json';
+
+const realUsecases = realUsecasesData.usecases;
 
 const valuePillars = [
   {
@@ -151,6 +154,108 @@ export default function HomePage() {
                 <div className="border-t border-white/15 pt-5">
                   <div className="text-xl font-semibold text-white">{scene.title}</div>
                   <p className="mt-3 text-sm leading-7 text-slate-300">{scene.body}</p>
+                </div>
+              </FadeIn>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* 실제 구축 사례 섹션 */}
+      <section id="real-usecases" className="bg-white">
+        <div className="mx-auto max-w-7xl px-6 py-20 lg:px-8">
+          <FadeIn>
+            <div className="mb-10 max-w-2xl">
+              <p className="text-xs font-mono uppercase tracking-[0.28em] text-emerald-700">Real-world builds</p>
+              <h2 className="mt-4 text-3xl font-bold tracking-tight text-slate-950 sm:text-4xl">
+                실제로 만들었습니다.
+              </h2>
+              <p className="mt-4 text-sm leading-7 text-slate-600">
+                가상 시나리오가 아니라, 실제 공공 데이터와 법령을 가지고 직접 구축한 사례입니다.
+                공픈클로 방식이 실무에서 어떻게 작동하는지 코드와 결과물로 보여줍니다.
+              </p>
+            </div>
+          </FadeIn>
+
+          <div className="space-y-6">
+            {realUsecases.map((uc, i) => (
+              <FadeIn key={uc.no} delay={i * 0.05}>
+                <div className="rounded-2xl border border-slate-200 bg-slate-50 p-8 hover:border-emerald-300 transition-colors">
+                  <div className="flex items-start justify-between gap-4 flex-wrap">
+                    <div>
+                      <div className="flex items-center gap-3 mb-2">
+                        <span className="text-xs font-mono bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded">
+                          {uc.no}
+                        </span>
+                        <span className="text-xs text-slate-500">{uc.부처} · {uc.부서}</span>
+                        <span className="text-xs bg-slate-900 text-white px-2 py-0.5 rounded">실제 사례</span>
+                      </div>
+                      <h3 className="text-xl font-bold text-slate-950 leading-snug">{uc.업무}</h3>
+                      <p className="mt-2 text-sm text-slate-600 max-w-2xl">{uc.한줄요약}</p>
+                    </div>
+                    <a
+                      href={uc.결과물.URL}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="shrink-0 inline-flex items-center gap-1.5 rounded-lg bg-emerald-700 px-4 py-2 text-sm font-semibold text-white hover:bg-emerald-800 transition-colors"
+                    >
+                      사이트 보기 →
+                    </a>
+                  </div>
+
+                  <div className="mt-6 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+                    <div>
+                      <p className="text-xs font-mono text-slate-400 uppercase tracking-widest mb-2">데이터 규모</p>
+                      <ul className="text-sm text-slate-700 space-y-1">
+                        <li>총 조문 {uc.데이터규모.총조문}개</li>
+                        <li>특례 조문 {uc.데이터규모.특례조문}개</li>
+                        <li>인용 법률 {uc.데이터규모.인용법률수}개</li>
+                        <li>인용 조문 {uc.데이터규모.인용조문수}개</li>
+                      </ul>
+                    </div>
+                    <div>
+                      <p className="text-xs font-mono text-slate-400 uppercase tracking-widest mb-2">기술 스택</p>
+                      <div className="flex flex-wrap gap-1.5">
+                        {uc.기술스택.map(t => (
+                          <span key={t} className="text-xs bg-slate-200 text-slate-700 px-2 py-0.5 rounded">{t}</span>
+                        ))}
+                      </div>
+                    </div>
+                    <div>
+                      <p className="text-xs font-mono text-slate-400 uppercase tracking-widest mb-2">주요 기능</p>
+                      <ul className="text-xs text-slate-600 space-y-1">
+                        {uc.주요기능.slice(0,4).map((f, j) => (
+                          <li key={j}>· {f}</li>
+                        ))}
+                      </ul>
+                    </div>
+                    <div>
+                      <p className="text-xs font-mono text-slate-400 uppercase tracking-widest mb-2">소요 시간</p>
+                      <p className="text-sm text-slate-700">{uc.소요시간}</p>
+                      <p className="text-xs font-mono text-slate-400 uppercase tracking-widest mt-4 mb-2">구축일</p>
+                      <p className="text-sm text-slate-700">{uc.구축일}</p>
+                    </div>
+                  </div>
+
+                  <div className="mt-6 pt-6 border-t border-slate-200 flex items-center gap-4">
+                    <a
+                      href={uc.결과물.저장소}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="text-xs text-slate-500 hover:text-slate-900 underline underline-offset-2"
+                    >
+                      GitHub 저장소 →
+                    </a>
+                    <span className="text-slate-300">|</span>
+                    <a
+                      href={uc.결과물.URL}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="text-xs text-emerald-700 hover:text-emerald-900 underline underline-offset-2"
+                    >
+                      {uc.결과물.URL}
+                    </a>
+                  </div>
                 </div>
               </FadeIn>
             ))}
