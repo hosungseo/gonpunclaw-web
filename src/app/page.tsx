@@ -161,7 +161,6 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* 실제 구축 사례 섹션 */}
       <section id="real-usecases" className="bg-white">
         <div className="mx-auto max-w-7xl px-6 py-20 lg:px-8">
           <FadeIn>
@@ -180,20 +179,20 @@ export default function HomePage() {
           <div className="space-y-6">
             {realUsecases.map((uc, i) => (
               <FadeIn key={uc.no} delay={i * 0.05}>
-                <div className="rounded-2xl border border-slate-200 bg-slate-50 p-8 hover:border-emerald-300 transition-colors">
-                  <div className="flex items-start justify-between gap-4 flex-wrap">
+                <div className="rounded-2xl border border-slate-200 bg-slate-50 p-8 transition-colors hover:border-emerald-300">
+                  <div className="flex flex-wrap items-start justify-between gap-4">
                     <div>
-                      <div className="flex items-center gap-3 mb-2">
-                        <span className="text-xs font-mono bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded">
+                      <div className="mb-2 flex items-center gap-3">
+                        <span className="rounded bg-emerald-100 px-2 py-0.5 text-xs font-mono text-emerald-800">
                           {uc.no}
                         </span>
                         <span className="text-xs text-slate-500">{uc.부처} · {uc.부서}</span>
-                        <span className="text-xs bg-slate-900 text-white px-2 py-0.5 rounded">실제 사례</span>
+                        <span className="rounded bg-slate-900 px-2 py-0.5 text-xs text-white">실제 사례</span>
                       </div>
-                      <h3 className="text-xl font-bold text-slate-950 leading-snug">{uc.업무}</h3>
-                      <p className="mt-2 text-sm text-slate-600 max-w-2xl">{uc.한줄요약}</p>
+                      <h3 className="text-xl font-bold leading-snug text-slate-950">{uc.업무}</h3>
+                      <p className="mt-2 max-w-2xl text-sm text-slate-600">{uc.한줄요약}</p>
                       {uc.배경 && (
-                        <p className="mt-3 text-sm text-slate-500 max-w-2xl leading-relaxed border-l-2 border-emerald-300 pl-3">
+                        <p className="mt-3 max-w-2xl border-l-2 border-emerald-300 pl-3 text-sm leading-relaxed text-slate-500">
                           {uc.배경}
                         </p>
                       )}
@@ -202,7 +201,7 @@ export default function HomePage() {
                       href={uc.결과물.URL}
                       target="_blank"
                       rel="noreferrer"
-                      className="shrink-0 inline-flex items-center gap-1.5 rounded-lg bg-emerald-700 px-4 py-2 text-sm font-semibold text-white hover:bg-emerald-800 transition-colors"
+                      className="inline-flex shrink-0 items-center gap-1.5 rounded-lg bg-emerald-700 px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-emerald-800"
                     >
                       사이트 보기 →
                     </a>
@@ -210,44 +209,48 @@ export default function HomePage() {
 
                   <div className="mt-6 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
                     <div>
-                      <p className="text-xs font-mono text-slate-400 uppercase tracking-widest mb-2">데이터 규모</p>
-                      <ul className="text-sm text-slate-700 space-y-1">
-                        <li>총 조문 {uc.데이터규모.총조문}개</li>
-                        <li>특례 조문 {uc.데이터규모.특례조문}개</li>
-                        <li>인용 법률 {uc.데이터규모.인용법률수}개</li>
-                        <li>인용 조문 {uc.데이터규모.인용조문수}개</li>
+                      <p className="mb-2 text-xs font-mono uppercase tracking-widest text-slate-400">데이터 규모</p>
+                      <ul className="space-y-1 text-sm text-slate-700">
+                        {'총조문' in uc.데이터규모 && <li>총 조문 {uc.데이터규모.총조문}개</li>}
+                        {'특례조문' in uc.데이터규모 && <li>특례 조문 {uc.데이터규모.특례조문}개</li>}
+                        {'인용법률수' in uc.데이터규모 && <li>인용 법률 {uc.데이터규모.인용법률수}개</li>}
+                        {'인용조문수' in uc.데이터규모 && <li>인용 조문 {uc.데이터규모.인용조문수}개</li>}
+                        {'정책대상지역' in uc.데이터규모 && <li>정책 대상 지역 {uc.데이터규모.정책대상지역}개</li>}
+                        {'분야수' in uc.데이터규모 && <li>분야 수 {uc.데이터규모.분야수}개</li>}
                       </ul>
                     </div>
                     <div>
-                      <p className="text-xs font-mono text-slate-400 uppercase tracking-widest mb-2">기술 스택</p>
+                      <p className="mb-2 text-xs font-mono uppercase tracking-widest text-slate-400">기술 스택</p>
                       <div className="flex flex-wrap gap-1.5">
-                        {uc.기술스택.map(t => (
-                          <span key={t} className="text-xs bg-slate-200 text-slate-700 px-2 py-0.5 rounded">{t}</span>
+                        {uc.기술스택.map((t) => (
+                          <span key={t} className="rounded bg-slate-200 px-2 py-0.5 text-xs text-slate-700">
+                            {t}
+                          </span>
                         ))}
                       </div>
                     </div>
                     <div>
-                      <p className="text-xs font-mono text-slate-400 uppercase tracking-widest mb-2">주요 기능</p>
-                      <ul className="text-xs text-slate-600 space-y-1">
-                        {uc.주요기능.slice(0,4).map((f, j) => (
+                      <p className="mb-2 text-xs font-mono uppercase tracking-widest text-slate-400">주요 기능</p>
+                      <ul className="space-y-1 text-xs text-slate-600">
+                        {uc.주요기능.slice(0, 4).map((f, j) => (
                           <li key={j}>· {f}</li>
                         ))}
                       </ul>
                     </div>
                     <div>
-                      <p className="text-xs font-mono text-slate-400 uppercase tracking-widest mb-2">소요 시간</p>
+                      <p className="mb-2 text-xs font-mono uppercase tracking-widest text-slate-400">소요 시간</p>
                       <p className="text-sm text-slate-700">{uc.소요시간}</p>
-                      <p className="text-xs font-mono text-slate-400 uppercase tracking-widest mt-4 mb-2">구축일</p>
+                      <p className="mb-2 mt-4 text-xs font-mono uppercase tracking-widest text-slate-400">구축일</p>
                       <p className="text-sm text-slate-700">{uc.구축일}</p>
                     </div>
                   </div>
 
-                  <div className="mt-6 pt-6 border-t border-slate-200 flex items-center gap-4">
+                  <div className="mt-6 flex items-center gap-4 border-t border-slate-200 pt-6">
                     <a
                       href={uc.결과물.저장소}
                       target="_blank"
                       rel="noreferrer"
-                      className="text-xs text-slate-500 hover:text-slate-900 underline underline-offset-2"
+                      className="text-xs text-slate-500 underline underline-offset-2 hover:text-slate-900"
                     >
                       GitHub 저장소 →
                     </a>
@@ -256,7 +259,7 @@ export default function HomePage() {
                       href={uc.결과물.URL}
                       target="_blank"
                       rel="noreferrer"
-                      className="text-xs text-emerald-700 hover:text-emerald-900 underline underline-offset-2"
+                      className="text-xs text-emerald-700 underline underline-offset-2 hover:text-emerald-900"
                     >
                       {uc.결과물.URL}
                     </a>
