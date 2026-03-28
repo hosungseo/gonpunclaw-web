@@ -197,26 +197,29 @@ export default function HomePage() {
                         </p>
                       )}
                     </div>
-                    <a
-                      href={uc.결과물.URL}
-                      target="_blank"
-                      rel="noreferrer"
-                      className="inline-flex shrink-0 items-center gap-1.5 rounded-lg bg-emerald-700 px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-emerald-800"
-                    >
-                      사이트 보기 →
-                    </a>
+                    {uc.결과물.URL ? (
+                      <a
+                        href={uc.결과물.URL}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="shrink-0 inline-flex items-center gap-1.5 rounded-lg bg-emerald-700 px-4 py-2 text-sm font-semibold text-white hover:bg-emerald-800 transition-colors"
+                      >
+                        사이트 보기 →
+                      </a>
+                    ) : (
+                      <span className="shrink-0 inline-flex items-center gap-1.5 rounded-lg border border-slate-300 bg-white px-4 py-2 text-sm font-semibold text-slate-500">
+                        배포 정리 중
+                      </span>
+                    )}
                   </div>
 
                   <div className="mt-6 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
                     <div>
-                      <p className="mb-2 text-xs font-mono uppercase tracking-widest text-slate-400">데이터 규모</p>
-                      <ul className="space-y-1 text-sm text-slate-700">
-                        {'총조문' in uc.데이터규모 && <li>총 조문 {uc.데이터규모.총조문}개</li>}
-                        {'특례조문' in uc.데이터규모 && <li>특례 조문 {uc.데이터규모.특례조문}개</li>}
-                        {'인용법률수' in uc.데이터규모 && <li>인용 법률 {uc.데이터규모.인용법률수}개</li>}
-                        {'인용조문수' in uc.데이터규모 && <li>인용 조문 {uc.데이터규모.인용조문수}개</li>}
-                        {'정책대상지역' in uc.데이터규모 && <li>정책 대상 지역 {uc.데이터규모.정책대상지역}개</li>}
-                        {'분야수' in uc.데이터규모 && <li>분야 수 {uc.데이터규모.분야수}개</li>}
+                      <p className="text-xs font-mono text-slate-400 uppercase tracking-widest mb-2">데이터 규모</p>
+                      <ul className="text-sm text-slate-700 space-y-1">
+                        {Object.entries(uc.데이터규모).slice(0, 4).map(([label, value]) => (
+                          <li key={label}>{label} {typeof value === 'number' ? value.toLocaleString() : String(value)}</li>
+                        ))}
                       </ul>
                     </div>
                     <div>
@@ -245,24 +248,30 @@ export default function HomePage() {
                     </div>
                   </div>
 
-                  <div className="mt-6 flex items-center gap-4 border-t border-slate-200 pt-6">
-                    <a
-                      href={uc.결과물.저장소}
-                      target="_blank"
-                      rel="noreferrer"
-                      className="text-xs text-slate-500 underline underline-offset-2 hover:text-slate-900"
-                    >
-                      GitHub 저장소 →
-                    </a>
-                    <span className="text-slate-300">|</span>
-                    <a
-                      href={uc.결과물.URL}
-                      target="_blank"
-                      rel="noreferrer"
-                      className="text-xs text-emerald-700 underline underline-offset-2 hover:text-emerald-900"
-                    >
-                      {uc.결과물.URL}
-                    </a>
+                  <div className="mt-6 pt-6 border-t border-slate-200 flex items-center gap-4 flex-wrap">
+                    {uc.결과물.저장소 && (
+                      <a
+                        href={uc.결과물.저장소}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="text-xs text-slate-500 hover:text-slate-900 underline underline-offset-2"
+                      >
+                        GitHub 저장소 →
+                      </a>
+                    )}
+                    {uc.결과물.저장소 && uc.결과물.URL && <span className="text-slate-300">|</span>}
+                    {uc.결과물.URL ? (
+                      <a
+                        href={uc.결과물.URL}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="text-xs text-emerald-700 hover:text-emerald-900 underline underline-offset-2"
+                      >
+                        {uc.결과물.URL}
+                      </a>
+                    ) : (
+                      <span className="text-xs text-slate-400">정적 프로토타입 정리 중</span>
+                    )}
                   </div>
                 </div>
               </FadeIn>
