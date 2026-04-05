@@ -192,6 +192,38 @@ export default function WikiPage() {
           </FadeIn>
         </div>
       </section>
+
+      <section className="bg-slate-50 border-t border-slate-200">
+        <div className="mx-auto max-w-5xl px-6 py-20 lg:px-8">
+          <FadeIn>
+            <p className="text-xs font-mono uppercase tracking-[0.28em] text-cyan-700">Next reading</p>
+            <h2 className="mt-4 text-3xl font-bold tracking-tight">이어서 볼 것</h2>
+            <p className="mt-4 max-w-3xl text-sm leading-7 text-slate-600">
+              공픈클로는 하나의 소개 페이지로 끝나지 않습니다. 실제 사례와 100선, 대시보드까지 함께 읽어야 전체 윤곽이 잡힙니다.
+            </p>
+          </FadeIn>
+          <div className="mt-10 grid gap-6 md:grid-cols-3">
+            <FadeIn>
+              <Link href="/#real-usecases" className="block rounded-2xl border border-slate-200 bg-white p-6 transition hover:border-cyan-300 hover:bg-cyan-50/30">
+                <div className="text-lg font-semibold text-slate-950">실제 사례</div>
+                <p className="mt-2 text-sm leading-7 text-slate-600">이미 구축한 공공형 도구와 결과물을 통해 공픈클로가 어떻게 작동하는지 본다.</p>
+              </Link>
+            </FadeIn>
+            <FadeIn delay={0.08}>
+              <Link href="/#usecases" className="block rounded-2xl border border-slate-200 bg-white p-6 transition hover:border-cyan-300 hover:bg-cyan-50/30">
+                <div className="text-lg font-semibold text-slate-950">유스케이스 100선</div>
+                <p className="mt-2 text-sm leading-7 text-slate-600">공공업무 자동화가 어디까지 가능한지 분야별 사례와 난이도로 훑어본다.</p>
+              </Link>
+            </FadeIn>
+            <FadeIn delay={0.16}>
+              <Link href="/dashboard" className="block rounded-2xl border border-slate-200 bg-white p-6 transition hover:border-cyan-300 hover:bg-cyan-50/30">
+                <div className="text-lg font-semibold text-slate-950">대시보드</div>
+                <p className="mt-2 text-sm leading-7 text-slate-600">운영 흐름과 데이터 구조를 더 제품적인 관점에서 살펴본다.</p>
+              </Link>
+            </FadeIn>
+          </div>
+        </div>
+      </section>
     </div>
   );
 }
