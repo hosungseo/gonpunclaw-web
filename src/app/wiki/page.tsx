@@ -3,32 +3,45 @@ import FadeIn from '@/components/FadeIn';
 
 const principles = [
   {
+    no: '01',
     title: '판단 주권은 사람에게 남긴다',
-    body: 'AI는 수집·정리·비교·초안을 맡고, 정책 판단과 공개 여부, 최종 책임은 사람이 가진다.',
+    body: 'AI는 수집, 정리, 비교, 초안, 교정을 맡고 판단과 책임은 사람이 가진다.',
   },
   {
-    title: '큰 일을 패킷으로 쪼갠다',
-    body: '문제정의 → 자료수집 → 구조화 → 초안 → 검증 → 배포 → 기록으로 나눠, 각 단계의 검토 경계를 분명히 한다.',
+    no: '02',
+    title: '큰 일을 packet과 workflow로 쪼갠다',
+    body: '문제정의 → 자료수집 → 구조화 → 초안 → 검증 → 배포 → 기록의 흐름으로 나누고, 각 단계의 검토 경계를 분명히 한다.',
   },
   {
+    no: '03',
     title: '상태파일과 검증 루프를 중시한다',
-    body: '좋은 공공 AX는 답변보다 상태기록, source trace, 검증 상태 표기가 남는다.',
+    body: '좋은 공공 AX는 그럴듯한 답변보다 source trace, 상태기록, 검증 가능성이 남는다.',
+  },
+  {
+    no: '04',
+    title: '속도보다 인지피로 절감을 중시한다',
+    body: '공공업무의 병목은 계산보다도 기억 피로, 검토 피로, 반복 수정 피로인 경우가 많다. 공픈클로는 사람이 덜 지치고 더 오래 정확하게 일하게 하는 쪽을 택한다.',
   },
 ];
 
 const usecases = [
-  {
-    title: '기구·정원 변화 리포트',
-    body: '부처별 조직 개편, 정원 증감, 기능 조정을 한눈에 추적하는 실무형 리포트.',
-  },
-  {
-    title: '정책지도 / 지역 비교 탐색기',
-    body: '인구·교육·고용·주거 지표를 지도와 비교표로 엮어, 지역 맥락을 읽는 판단도구로 바꾼다.',
-  },
-  {
-    title: '고위공무원 바이브코딩 체험',
-    body: '국장급이 직접 AI에게 지시해 업무용 도구를 만들며, 교육보다 빠르게 효능감을 체험하게 한다.',
-  },
+  '부처별 기구·정원 변화 리포트',
+  '정책지도 / 지역 비교 탐색기',
+  '법령·판례·해석례 기반 실무 해설',
+  '정책 브리프 / 보고서 초안 자동화',
+  '고위공무원 바이브코딩 체험 프로젝트',
+];
+
+const notThis = [
+  '단순 챗봇이 아니다.',
+  '전통적 SI의 경량 대체재도 아니다.',
+  'AI가 혼자 공공업무를 자동 수행하는 자율 시스템도 아니다.',
+];
+
+const isThis = [
+  '공공데이터 위에 얹힌 AI 작업환경',
+  '현업이 직접 제작하고 수정하는 AX 체계',
+  'packet과 workflow를 통해 신뢰를 확보하는 운영 방식',
 ];
 
 export default function WikiPage() {
@@ -37,16 +50,15 @@ export default function WikiPage() {
       <section className="border-b border-slate-200 bg-slate-50">
         <div className="mx-auto max-w-5xl px-6 py-20 lg:px-8">
           <FadeIn>
-            <p className="text-xs font-mono uppercase tracking-[0.28em] text-cyan-700">Wiki</p>
+            <p className="text-xs font-mono uppercase tracking-[0.28em] text-cyan-700">Wiki / One-Pager</p>
             <h1 className="mt-4 text-4xl font-bold tracking-tight sm:text-5xl">
-              공픈클로는 제품이면서,
+              공픈클로는 공공데이터를 읽는 데서 끝내지 않고,
               <br />
-              동시에 작업 방식입니다.
+              판단 가능한 결과물까지 만든다.
             </h1>
             <p className="mt-6 max-w-3xl text-base leading-8 text-slate-600">
               공픈클로는 공무원과 현업이 AI를 직접 써서 공공데이터·법령·업무지식을 바탕으로
-              자기 업무용 도구를 스스로 만드는 공공 AX 작업환경입니다. 이 페이지는 그 철학과 원리,
-              대표 장면을 한눈에 보여주는 위키 허브의 첫 버전입니다.
+              자기 업무용 도구를 스스로 만드는 공공 AX 작업환경입니다.
             </p>
             <div className="mt-8 flex flex-wrap gap-3">
               <Link
@@ -70,11 +82,16 @@ export default function WikiPage() {
         <div className="mx-auto grid max-w-5xl gap-14 px-6 py-20 lg:grid-cols-[0.92fr_1.08fr] lg:px-8">
           <FadeIn>
             <div>
-              <p className="text-xs font-mono uppercase tracking-[0.28em] text-cyan-700">Definition</p>
-              <h2 className="mt-4 text-3xl font-bold tracking-tight">공픈클로는 무엇인가</h2>
+              <p className="text-xs font-mono uppercase tracking-[0.28em] text-cyan-700">Why</p>
+              <h2 className="mt-4 text-3xl font-bold tracking-tight">왜 필요한가</h2>
               <p className="mt-5 text-sm leading-7 text-slate-600">
-                공픈클로는 단순 챗봇도, 전통적 SI의 축소판도 아닙니다. 공공데이터와 업무지식 위에 얹힌
-                AI 작업환경으로서, 현업이 직접 지시하고 수정하며 결과물을 만드는 제작형 AX 체계입니다.
+                정부의 AI 도입은 기술 부족보다 사용 주체의 거리감이 더 큰 병목입니다. 데이터와 API는 이미
+                많이 열려 있지만, 그것을 연결하고 구조화해 판단 도구로 바꾸는 일은 여전히 소수의 기술 인력에
+                집중돼 있습니다.
+              </p>
+              <p className="mt-4 text-sm leading-7 text-slate-600">
+                공픈클로는 이 병목을 줄이기 위해 시스템 납품보다 사람의 역량 축적, 교육보다 효능감 형성,
+                탑다운 DX보다 바텀업 AX를 더 중요하게 봅니다.
               </p>
             </div>
           </FadeIn>
@@ -82,15 +99,15 @@ export default function WikiPage() {
             <div className="space-y-6 border-l border-slate-200 pl-6">
               <div>
                 <div className="text-lg font-semibold">시스템 납품보다 역량 축적</div>
-                <p className="mt-2 text-sm leading-7 text-slate-600">외부가 만들어주는 도구보다, 현업이 직접 만들고 고칠 수 있는 역량을 남긴다.</p>
+                <p className="mt-2 text-sm leading-7 text-slate-600">외부가 만들어주는 완성품보다, 현업이 직접 만들고 고칠 수 있는 능력을 남긴다.</p>
               </div>
               <div>
-                <div className="text-lg font-semibold">AI 대체보다 판단 증강</div>
-                <p className="mt-2 text-sm leading-7 text-slate-600">AI는 반복과 정리를 맡고, 판단 주권은 사람에게 남긴다.</p>
+                <div className="text-lg font-semibold">교육보다 효능감</div>
+                <p className="mt-2 text-sm leading-7 text-slate-600">강의보다 직접 만들어보고 결과를 보는 경험이 행동을 더 빨리 바꾼다.</p>
               </div>
               <div>
-                <div className="text-lg font-semibold">도입론보다 실제 제작</div>
-                <p className="mt-2 text-sm leading-7 text-slate-600">교육과 구호보다, 실제 도구를 만들어보는 경험을 먼저 만든다.</p>
+                <div className="text-lg font-semibold">탑다운 DX보다 바텀업 AX</div>
+                <p className="mt-2 text-sm leading-7 text-slate-600">현업이 문제를 정의하고 AI에게 직접 지시해 도구를 만드는 흐름을 더 중시한다.</p>
               </div>
             </div>
           </FadeIn>
@@ -101,14 +118,17 @@ export default function WikiPage() {
         <div className="mx-auto max-w-5xl px-6 py-20 lg:px-8">
           <FadeIn>
             <p className="text-xs font-mono uppercase tracking-[0.28em] text-cyan-700">Principles</p>
-            <h2 className="mt-4 text-3xl font-bold tracking-tight">핵심 원리</h2>
+            <h2 className="mt-4 text-3xl font-bold tracking-tight">공픈클로의 원리</h2>
           </FadeIn>
-          <div className="mt-12 grid gap-8 md:grid-cols-3">
+          <div className="mt-12 grid gap-8 md:grid-cols-2">
             {principles.map((item, index) => (
-              <FadeIn key={item.title} delay={index * 0.08}>
-                <div className="h-full border-t border-slate-300 pt-5">
-                  <div className="text-xl font-semibold text-slate-950">{item.title}</div>
-                  <p className="mt-3 text-sm leading-7 text-slate-600">{item.body}</p>
+              <FadeIn key={item.no} delay={index * 0.08}>
+                <div className="grid gap-3 border-t border-slate-300 pt-5 sm:grid-cols-[72px_1fr] sm:gap-6">
+                  <div className="text-sm font-mono tracking-[0.24em] text-cyan-700">{item.no}</div>
+                  <div>
+                    <div className="text-lg font-semibold text-slate-950">{item.title}</div>
+                    <p className="mt-2 text-sm leading-7 text-slate-600">{item.body}</p>
+                  </div>
                 </div>
               </FadeIn>
             ))}
@@ -119,16 +139,13 @@ export default function WikiPage() {
       <section>
         <div className="mx-auto max-w-5xl px-6 py-20 lg:px-8">
           <FadeIn>
-            <p className="text-xs font-mono uppercase tracking-[0.28em] text-cyan-700">Flagships</p>
+            <p className="text-xs font-mono uppercase tracking-[0.28em] text-cyan-700">Scenes</p>
             <h2 className="mt-4 text-3xl font-bold tracking-tight">대표 장면</h2>
           </FadeIn>
-          <div className="mt-12 space-y-8">
+          <div className="mt-12 space-y-6">
             {usecases.map((item, index) => (
-              <FadeIn key={item.title} delay={index * 0.08}>
-                <div className="grid gap-4 border-t border-slate-200 pt-5 md:grid-cols-[220px_1fr] md:gap-8">
-                  <div className="text-lg font-semibold text-slate-950">{item.title}</div>
-                  <p className="text-sm leading-7 text-slate-600">{item.body}</p>
-                </div>
+              <FadeIn key={item} delay={index * 0.08}>
+                <div className="border-t border-slate-200 pt-5 text-sm leading-7 text-slate-700">{item}</div>
               </FadeIn>
             ))}
           </div>
@@ -137,14 +154,40 @@ export default function WikiPage() {
 
       <section className="bg-slate-950 text-white">
         <div className="mx-auto max-w-5xl px-6 py-20 lg:px-8">
+          <div className="grid gap-12 lg:grid-cols-2">
+            <FadeIn>
+              <div>
+                <p className="text-xs font-mono uppercase tracking-[0.28em] text-cyan-300">What it is not</p>
+                <h2 className="mt-4 text-3xl font-bold tracking-tight">공픈클로는 무엇이 아닌가</h2>
+                <ul className="mt-6 space-y-3 text-sm leading-7 text-slate-300">
+                  {notThis.map((item) => (
+                    <li key={item}>- {item}</li>
+                  ))}
+                </ul>
+              </div>
+            </FadeIn>
+            <FadeIn delay={0.08}>
+              <div>
+                <p className="text-xs font-mono uppercase tracking-[0.28em] text-cyan-300">What it is</p>
+                <h2 className="mt-4 text-3xl font-bold tracking-tight">공픈클로는 무엇인가</h2>
+                <ul className="mt-6 space-y-3 text-sm leading-7 text-slate-300">
+                  {isThis.map((item) => (
+                    <li key={item}>- {item}</li>
+                  ))}
+                </ul>
+              </div>
+            </FadeIn>
+          </div>
+        </div>
+      </section>
+
+      <section className="border-t border-slate-200 bg-white">
+        <div className="mx-auto max-w-5xl px-6 py-20 lg:px-8">
           <FadeIn>
-            <p className="text-xs font-mono uppercase tracking-[0.28em] text-cyan-300">Next</p>
-            <h2 className="mt-4 text-3xl font-bold tracking-tight sm:text-4xl">
-              이 위키는 시작점입니다.
-            </h2>
-            <p className="mt-5 max-w-3xl text-sm leading-7 text-slate-300">
-              다음 버전에서는 공픈클로 one-pager, flagship 3선, source archive, 운영 규칙까지 이어 붙여
-              철학·데모·실행 방식을 하나의 공개 설명 구조로 확장할 수 있습니다.
+            <p className="text-xs font-mono uppercase tracking-[0.28em] text-cyan-700">Conclusion</p>
+            <h2 className="mt-4 text-3xl font-bold tracking-tight">한 문장 결론</h2>
+            <p className="mt-6 max-w-4xl text-lg leading-8 text-slate-700">
+              공픈클로는 공공데이터를 읽는 데서 끝내지 않고, 현업이 AI를 통해 <strong>판단 가능한 결과물과 도구</strong>를 직접 만들어가는 공공 AX의 실험실입니다.
             </p>
           </FadeIn>
         </div>
