@@ -8,7 +8,7 @@ import { getMetadata } from '@/lib/data';
 const links = [
   { href: '/', label: '홈' },
   { href: '/dashboard', label: '대시보드' },
-  { href: '/wiki', label: '위키' },
+  { href: '/wiki.html', label: '위키' },
   { href: '/about', label: '소개' },
 ];
 
